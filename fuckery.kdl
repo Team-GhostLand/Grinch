@@ -1,0 +1,12 @@
+format-version 1
+
+defautl-modpack "Something"
+
+modpacks {
+    modpack "Something" path="./modpack";
+    modpack "Something else" path="./modpack2" {
+        allow "abc" "xyz"
+        expect "abc" "xyz"
+        disallowed "abc" "xyz"
+    }
+}

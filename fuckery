@@ -1,0 +1,42 @@
+grinch imp
+ *checks for unknown mrpacks
+ *if found ==1, adds it as known
+ *2 steps above can be overriden by imp <name>
+ *unzips into .temp
+ *transforms:
+  *GR_ = marks transformable
+  *COPT_ = c optional (can't SRV)
+  *SOPT_ = s optional (can't CLI)
+  *OPT_ = both optional (or whichever one is supported)
+  *CLI_ = s unsupported (can't SRV)
+  *SRV_ = c unsupported (can't CLI)
+ *checks constraints (optinally removing anything that's not allowed)
+ *moves overrides/.SERVERSIDE to server_overrides
+ *overrides a folder indicated by grinch.kdl (overridable by .gr-workspace) with .temp (after a backup)
+ *removes .temp
+
+grinch exp
+ *if ran with --download: git clones
+ *copies a folder indicated by grinch.kdl (overridable by .gr-workspace, and furthermore by exp <name>, unless exp <name> works differently) to .temp (after a backup)
+ *if ran without --quick: moves any file/folder from overrides/ listed in server_overrides/REMOVALS.txt to client_overrides/ and deletes server_overrides/REMOVALS.txt
+ *if ran with --dev, marks every client-unsupported mod as client-required, so that it will be seen by Modrinth while developing
+ *if ran with --slim, marks every client-optional mod as client-unsupported, so that it gets skipped by Modrinth
+ *if ran with --tweakable, disables every client-optional mod, so that the users can choose whether they want it or not (You know... Like how Optional Mods are supposed to behave, according to MODRINTH'S OWN GODDAMN DOCS, but MR's own launcher somehow doesn't support this)
+ *zips the contents of .temp into an MRPACK (derived from folder name, or set by --to - if there is only 1 pack in grinch.kdl, then exp <name> can also be used to set export name, instead of picking which pack it imports)
+ *if ran with --cleanup and --download: removes the git cloned folder
+
+grinch init
+ *setup .gitignore file if missing
+  *all mrpacks
+  *.gr-workspace file
+ *setup .gr-workspace if missing
+ *setup grinch.kdl file if missing
+
+grinch pfx
+ *auto-set CLI_ prefixes for texturepacks/shaders
+ *...and mark them as unsupported on the server
+
+grinch dev
+ *grinch exp (unless --no-export) (--as = --to)
+ *waits for a new mrpack
+ *grinch imp
