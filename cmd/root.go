@@ -11,23 +11,9 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "Grinch",
+	Use:   "grinch",
 	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
-}
-
-var otherCmd = &cobra.Command{
-	Use:   "Grinch test",
-	Short: "A test",
-	Long: `A longer description that spans multiple lines and likely contains
+	Long: `ROOT: A longer description that spans multiple lines and likely contains
 examples and usage of using your application. For example:
 
 Cobra is a CLI library for Go that empowers applications.
@@ -41,11 +27,11 @@ to quickly create a Cobra application.`,
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
+	//fmt.Println("root called")
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
 	}
-	rootCmd.AddCommand(otherCmd)
 }
 
 func init() {

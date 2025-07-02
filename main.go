@@ -3,7 +3,9 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 */
 package main
 
-import "GhostLand/Grinch/cmd"
+import (
+	"github.com/Team-GhostLand/Grinch/cmd"
+)
 
 func main() {
 	cmd.Execute()

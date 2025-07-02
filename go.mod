@@ -1,4 +1,4 @@
-module GhostLand/Grinch
+module github.com/Team-GhostLand/Grinch
 
 go 1.24.4
 
