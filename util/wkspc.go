@@ -3,6 +3,7 @@ package util
 import (
 	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"strings"
 )
@@ -17,7 +18,7 @@ func LoadWorkspaceConfig() (WorkspaceConfigFile, error) {
 	data_bin, err := os.ReadFile(filename)
 
 	if err != nil {
-		if !os.IsNotExist(err) { //To see if we got ANY OTHER KIND of error than „not exists” (that's different from what os.IsExist does) - these errors are irrecoverable, so we crash
+		if !errors.Is(err, fs.ErrNotExist) { //To see if we got ANY OTHER KIND of error than „not exists” (that's different from what directly checking fs.ErrExist does) - these errors are irrecoverable, so we crash
 			return nil, errors.New(generic_error + err.Error())
 		}
 
@@ -25,11 +26,11 @@ func LoadWorkspaceConfig() (WorkspaceConfigFile, error) {
 		if err != nil {
 			return nil, errors.New(generic_error + err.Error())
 		}
-		if err = PopulateWorkspaceFile(*file); err != nil {
+		defer file.Close()
+		if err = PopulateWorkspaceConfigFile(*file); err != nil {
 			return nil, errors.New("Couldn't write to a just-created .gr-workspace file: " + err.Error())
 		}
 		must_reload = true
-		file.Close()
 	}
 
 	if must_reload {
@@ -41,7 +42,7 @@ func LoadWorkspaceConfig() (WorkspaceConfigFile, error) {
 	lines := strings.Split(data, "\n")
 
 	if len(lines) < 3 {
-		return nil, errors.New("your .gr-workspace is malformatted: it has " + fmt.Sprint(len(lines)) + " lines (less than minimum of 3)")
+		return nil, errors.New("your .gr-workspace is malformatted: it has " + fmt.Sprint(len(lines)) + " lines (less than the minimum of 3)")
 	}
 
 	if lines[0] != "FMTv1" {
@@ -55,7 +56,7 @@ func LoadWorkspaceConfig() (WorkspaceConfigFile, error) {
 
 }*/
 
-func PopulateWorkspaceFile(file os.File) error {
+func PopulateWorkspaceConfigFile(file os.File) error {
 	_, err := file.WriteString("FMTv1\n# yap yap yap\n")
 	return err
 }

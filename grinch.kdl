@@ -1,7 +1,9 @@
 format-version 1
 
-//default-modpack "Packk"
+default-modpack "Packk"
 
 modpacks {
-    //modpack "Pack" path="./modpack";
+    modpack "Pack" path="./modpack";
+    modpack "Pack2" path="./modpack2";
+    modpack "Pack p";
 }

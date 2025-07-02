@@ -51,7 +51,7 @@ func SelectModpack(pcf ProjectConfigFile) (*ModpackDefinition, error) {
 	}
 
 	if wcf[2] == "" && pcf.Default == "" && len(pcf.MPs.MP) > 1 {
-		return nil, errors.New("you don't have any modpacks selected in neither workspace nor projects settings, but you have more than one defined, so we cannot auto-select")
+		return nil, errors.New("you don't have any modpacks selected in neither workspace nor project settings, but you have more than one defined, so we cannot auto-select")
 	} else if wcf[2] == "" && pcf.Default == "" && len(pcf.MPs.MP) == 1 {
 		return &pcf.MPs.MP[0], nil
 	} else if wcf[2] != "" { //We don't care whether default-modpack is set, since workspace takes precednece
@@ -60,7 +60,7 @@ func SelectModpack(pcf ProjectConfigFile) (*ModpackDefinition, error) {
 		return FindModpackByName(pcf, pcf.Default)
 	}
 
-	return nil, errors.New("Something went HORRIBLY wrong when selecting modpacks - PLEASE do report this error to us!!!") //This code should never be reached
+	return nil, errors.New("Something went HORRIBLY wrong when selecting modpacks - PLEASE do report this error to us!!!") //This code is unreachable. If it ever IS reached, then we got a len(pcf.MPs.MP) < 1, which shouldn't happen under normal circumstances (LoadConfig() throws if there are no modpacks), hence the ominous error message (we even broke convention of „no capitals” and „no exclamation marks” just to signify how important is it).
 }
 
 func FindModpackByName(pcf ProjectConfigFile, name string) (*ModpackDefinition, error) {
@@ -74,5 +74,5 @@ func FindModpackByName(pcf ProjectConfigFile, name string) (*ModpackDefinition, 
 		}
 	}
 
-	return nil, errors.New("modpack " + name + " not found")
+	return nil, errors.New("modpack " + name + " isn't defined anywhere in grinch.kdl")
 }
