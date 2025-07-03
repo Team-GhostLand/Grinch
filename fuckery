@@ -11,14 +11,14 @@ grinch imp
   *CLI_ = s unsupported (can't SRV)
   *SRV_ = c unsupported (can't CLI)
  *checks constraints (optinally removing anything that's not allowed)
- *moves overrides/.SERVERSIDE to server_overrides
+ *moves overrides/.SERVERSIDE to server-overrides
  *overrides a folder indicated by grinch.kdl (overridable by .gr-workspace) with .temp (after a backup)
  *removes .temp
 
 grinch exp
  *copies a folder indicated by grinch.kdl (overridable by .gr-workspace, and furthermore by exp <name>) to .temp
- *if ran without --quick (or any other flag, since they target the client), ie. in „default mode”: moves any file/folder from overrides/ listed in server_overrides/REMOVALS.txt to client_overrides/ and deletes server_overrides/REMOVALS.txt
- *if ran with --dev, marks every client-unsupported mod as client-required, so that it will be seen by Modrinth while developing; moves server_overrides to overrides/.SERVERSIDE
+ *if ran without --quick (or any other flag, since they target the client), ie. in „default mode”: moves any file/folder from overrides/ listed in server-overrides/REMOVALS.txt to client-overrides/ and deletes server-overrides/REMOVALS.txt
+ *if ran with --dev, marks every client-unsupported mod as client-required, so that it will be seen by Modrinth while developing; moves server-overrides/ to overrides/.SERVERSIDE
  *if ran with --slim, marks every client-optional mod as client-unsupported, so that it gets skipped by Modrinth
  *if ran with --tweakable, disables every client-optional mod, so that the users can choose whether they want it or not (You know... Like how Optional Mods are supposed to behave, according to MODRINTH'S OWN GODDAMN DOCS, but MR's own launcher somehow doesn't support this)
  *zips the contents of .temp into an MRPACK (derived from pack name, grinch.kdl options or set by --to)
