@@ -1,9 +1,10 @@
 format-version 1
 
-default-modpack "Packk"
+default-modpack "TEST";
 
 modpacks {
     modpack "Pack" path="./modpack";
     modpack "Pack2" path="./modpack2";
     modpack "Pack p";
+    modpack "TEST" path="real-modpack" preferred-name="gl7baseline";
 }

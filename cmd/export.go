@@ -41,18 +41,18 @@ var exportCmd = &cobra.Command{
 		}
 
 		//There's probably a better way to do it, using Go's funky little string marker thingys (like when parsing KDL), but I don't know Go well enough to know how to use them
-		em := trans.Default
+		em := trans.EmDefault
 		if em_quick {
-			em = trans.Quick
+			em = trans.EmQuick
 		}
 		if em_dev {
-			em = trans.Dev
+			em = trans.EmDev
 		}
 		if em_slim {
-			em = trans.Slim
+			em = trans.EmSlim
 		}
 		if em_tweakable {
-			em = trans.Tweakable
+			em = trans.EmTweakable
 		}
 
 		to, err := cmd.Flags().GetString("to")
@@ -73,6 +73,9 @@ var exportCmd = &cobra.Command{
 			mp, err = util.SelectModpack(pcf)
 			util.Hndl(err, "Couldn't select modpack", false)
 		} else {
+			if em == trans.EmDev {
+				util.Hndl(errors.New("please use .gr-workspace or grinch.kdl instead"), "You cannot combine the --dev flag with manually selecting which pack to export - this runs the risk of accidentially importing over a wrong modpack later down the line", false)
+			}
 			mp, err = util.FindModpackByName(pcf, args[0])
 			util.Hndl(err, "Couldn't find modpack "+args[0], false)
 		}
@@ -82,7 +85,7 @@ var exportCmd = &cobra.Command{
 			util.Hndl(errors.New("chosen modpack "+mp.Name+" has no path associated with it"), "Couldn't select modpack", false)
 		}
 
-		exn := util.GetExportName(mp, to)
+		name := util.GetExportName(mp, to)
 
 		//--TEMPDIR--
 		_, err = util.IsSafelyCreateable(util.Tempdir)
@@ -99,26 +102,32 @@ var exportCmd = &cobra.Command{
 
 		//--TRANSFORMS--
 		err = trans.DoExportJsonTransforms(em)
-		util.Hndl(err, "Couldn't execute the JSON transforms necessary by your export mode", true)
+		util.Hndl(err, "Couldn't execute the JSON transforms necessary for your export mode", true)
 
-		file_transform_error := "Couldn't execute the file transforms necessary by your export mode"
-		if em == trans.Default {
+		file_transform_error := "Couldn't execute the file transforms necessary for your export mode"
+		if em == trans.EmDefault {
 			err = trans.ResolveServerRemovals()
 			util.Hndl(err, file_transform_error, true)
 		}
-		if em == trans.Dev {
+		if em == trans.EmDev {
 			err = trans.SwapServerGitToDev()
 			util.Hndl(err, file_transform_error, true)
 		}
 
 		//--ZIP THAT BODYBAG UP--
-		_, err = util.IsSafelyCreateable(exn)
+		_, err = util.IsSafelyCreateable(name)
 		if err != nil {
-			util.Hndl(err, "Cannot safely create "+exn, true)
+			util.Hndl(err, "Cannot safely create "+name, true)
 		}
-		err = util.MakeZipFile(util.Tempdir, exn)
+		err = util.MakeZipFile(util.Tempdir, name)
 		if err != nil {
-			util.Hndl(err, "Cannot ZIP "+util.Tempdir+" to "+exn, true)
+			util.Hndl(err, "Cannot ZIP "+util.Tempdir+" to "+name, true)
+		}
+
+		//--...AND MARK IT AS KNOWN--
+		util.AppendToWorkspaceConfig(name)
+		if err != nil {
+			log.Println("WARN: Couldn't mark your exported mrpack as known - it may get picked up by grinch import by accident")
 		}
 	},
 }
@@ -130,9 +139,9 @@ func init() {
 	exportCmd.Flags().BoolP("quick", "q", false, "Quick mode: Much quicker, as it doesn't do any file/JSON transforms whatsoever. Sufficient if you're exporting it for client-side only or if your server's Modrinth loader can understand the non-standard server-overrides/REMOVALS.txt file. Cannot be combined with other mode flags.")
 	exportCmd.Flags().BoolP("dev", "d", false, "Dev mode: Transforms JSON and files in such a way that makes your pack suitable for development using Modrinth's official launcher. Replaces server-overrides/ with overrides/.SERVERSIDE (becasue otherwise Modrinth launcher would discard them, due to it being a client-side launcher) and marks any client-unsupported mod as client-required (same reason). These steps will later be reversed when running grinch import (though the latter requires you to have prefixes configured correctly, which Grinch won't help you with - thankfully, you only need to do this once and they'll be persisted across future imports/exports). Cannot be combined with other mode flags.")
 	exportCmd.Flags().BoolP("slim", "s", false, "Slim mode: Marks every client-optional mod as client-unsupported. This is done to mimick the standards-compliant behaviour of „letting users choose whether they want to install optional mods” within the Modrinth launcher (which - hilariously - isn't compliant with Modrinth's own standard), by letting the users pick whether they want a „full” modpack experience or a „slim” one (if you provide both files, of course). Since this option only targets clients (or, one specific client, really), we don't do any extra transforms to ensure proper server support (ie. server-overrides/REMOVALS.txt stays). Cannot be combined with other mode flags.")
-	exportCmd.Flags().BoolP("tweakable", "t", false, "Tweakable mode: Marks every client-optional mod as disabled. This is done to mimick the standards-compliant behaviour of „letting users choose whether they want to install optional mods” within the Modrinth launcher (which - hilariously - isn't compliant with Modrinth's own standard), by letting the users manually re-enable mods that they want. Since this option only targets clients (or, one specific client, really), we don't do any extra transforms to ensure proper server support (ie. server-overrides/REMOVALS.txt stays). Cannot be combined with other mode flags.")
-	exportCmd.Flags().StringP("to", "T", "", "Renames the output file. Cannot be used in --dev mode, as that runs the risk of accidentially importing your Mrpack over a wrong Grinch project later down the line.")
+	exportCmd.Flags().BoolP("tweakable", "t", false, "Tweakable mode: Marks every client-optional mod as disabled. This is done to mimick the standards-compliant behaviour of „letting users choose whether they want to install optional mods” within the Modrinth launcher (which - hilariously - isn't compliant with Modrinth's own standard), by letting the users manually re-enable mods that they want. Since this option only targets clients (for that matte, THIS MODE IS COMPLETLEY INCOMPATIBLE WITH SERVERS!!!, as mod disabling targets both sides, so server-required mods may get hit by accident), we don't do any extra transforms to ensure proper server support (ie. server-overrides/REMOVALS.txt stays). Cannot be combined with other mode flags.")
 
-	exportCmd.MarkFlagsMutuallyExclusive("to", "dev")
+	exportCmd.Flags().StringP("to", "T", "", "Renames the output file.")
+
 	exportCmd.MarkFlagsMutuallyExclusive("quick", "dev", "slim", "tweakable", "default")
 }

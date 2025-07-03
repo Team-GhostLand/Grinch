@@ -11,8 +11,13 @@ import (
 	"strings"
 )
 
+// Various file locations that should stay consistent within the app
 const (
-	Tempdir = ".temp"
+	Tempdir                 = ".temp"
+	GitSvOvrrDir            = Tempdir + "/server-overrides"
+	DevSvOvrrDir            = Tempdir + "/overrides/.SERVERSIDE"
+	MrIndexFileLocation     = Tempdir + "/modrinth.index.json"
+	GrWorkspaceFileLocation = ".gr-workspace"
 )
 
 func Hndl(err error, with string, cleanup bool) {
@@ -50,7 +55,7 @@ func IsSafelyCreateable(name string) (bool, error) {
 		if errors.Is(err, fs.ErrNotExist) { //If we got a NotExists error - great! There's nothing. Can safely write.
 			return true, nil
 		}
-		return false, err //...otherwise, either the direcotry/file DOES EXIST (but couldn't be opened for some reason) or doesn't (but then likely wouldn't be safely createable, either - eg. because we have no permissions or the filesystem failed)
+		return false, err //...otherwise, either the direcotry/file DOES EXIST (but couldn't be Stat'd for some reason) or doesn't (but then likely wouldn't be safely createable, either - eg. because we have no permissions or the filesystem failed)
 	}
 
 	//If the error wasn't NIL, then Stat was succesful - ie. the direcotry/file must, logically, exist

@@ -1,33 +1,54 @@
 package trans
 
-import "errors"
+import (
+	"errors"
+	"io/fs"
+	"os"
+	"path/filepath"
+
+	"github.com/Team-GhostLand/Grinch/util"
+)
 
 type ExportMode int
 
 const (
-	Default ExportMode = iota
-	Quick
-	Dev
-	Slim
-	Tweakable
+	EmDefault ExportMode = iota
+	EmQuick
+	EmDev
+	EmSlim
+	EmTweakable
 )
 
 func SwapServerGitToDev() error {
-	return errors.New("not yet implemented")
+	if _, err := os.Stat(filepath.FromSlash(util.GitSvOvrrDir)); errors.Is(err, fs.ErrNotExist) {
+		return nil //Do nothing if there were no serever_overrides in the 1st place
+	}
+	return os.Rename(filepath.FromSlash(util.GitSvOvrrDir), filepath.FromSlash(util.DevSvOvrrDir))
 }
 
 func ResolveServerRemovals() error {
-	return errors.New("not yet implemented")
+	return errors.New("default export mode not yet implemented, please use --quick for now") //TODO
 }
 
 func DoExportJsonTransforms(em ExportMode) error {
-	if em == Default || em == Quick {
-		return nil //They don't have any JSON transforms - early-return
+	if em == EmDefault || em == EmQuick {
+		return nil //They don't need any JSON transforms - early-return
 	}
 
-	if em == Dev {
-		return errors.New("not yet implemented")
+	mi, err := util.GetMrIndexJson()
+	if err != nil {
+		return err
 	}
 
-	return errors.New("not yet implemented") //We don't care about the other modes yet - I'm under a THIGHT deadline.
+	switch em {
+	case EmDev:
+		util.DoClientJsonTransforms(&mi, util.MssUnsupported, util.MssRequired, false)
+	case EmSlim:
+		util.DoClientJsonTransforms(&mi, util.MssOptional, util.MssUnsupported, false)
+	case EmTweakable:
+		util.DoClientJsonTransforms(&mi, util.MssOptional, util.MssOptional, true)
+	}
+
+	err = util.SetMrIndexJson(mi)
+	return err
 }

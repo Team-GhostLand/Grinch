@@ -11,18 +11,17 @@ import (
 type WorkspaceConfigFile = []string
 
 func LoadWorkspaceConfig() (WorkspaceConfigFile, error) {
-	filename := ".gr-workspace"
 	generic_error := "Could neither load nor create a .gr-workspace file: "
 	must_reload := false
 
-	data_bin, err := os.ReadFile(filename)
+	data_bin, err := os.ReadFile(GrWorkspaceFileLocation)
 
 	if err != nil {
 		if !errors.Is(err, fs.ErrNotExist) { //To see if we got ANY OTHER KIND of error than „not exists” (that's different from what directly checking fs.ErrExist does) - these errors are irrecoverable, so we crash
 			return nil, errors.New(generic_error + err.Error())
 		}
 
-		file, err := os.Create(".gr-workspace")
+		file, err := os.Create(GrWorkspaceFileLocation)
 		if err != nil {
 			return nil, errors.New(generic_error + err.Error())
 		}
@@ -34,7 +33,7 @@ func LoadWorkspaceConfig() (WorkspaceConfigFile, error) {
 	}
 
 	if must_reload {
-		if data_bin, err = os.ReadFile(filename); err != nil {
+		if data_bin, err = os.ReadFile(GrWorkspaceFileLocation); err != nil {
 			return nil, errors.New("Couldn't load a just-created .gr-workspace file" + err.Error())
 		}
 	}
@@ -52,11 +51,32 @@ func LoadWorkspaceConfig() (WorkspaceConfigFile, error) {
 	return lines, nil
 }
 
-/*func CheckAndAddKnownMrpack() (bool, error) {
+func CheckAndAddKnownMrpack(name string, wcf WorkspaceConfigFile) (bool, error) {
+	for i, l := range wcf {
+		if i < 3 {
+			continue //We only care about 4th line (3rd index) and beyond
+		}
+		if l == name {
+			return true, nil
+		}
+	}
 
-}*/
+	err := AppendToWorkspaceConfig(name)
+	return false, err
+}
 
 func PopulateWorkspaceConfigFile(file os.File) error {
-	_, err := file.WriteString("FMTv1\n# yap yap yap\n")
+	_, err := file.WriteString("FMTv1\n# TODO: Have a proper comment here\n")
+	return err
+}
+
+func AppendToWorkspaceConfig(line string) error {
+	f, err := os.OpenFile(GrWorkspaceFileLocation, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	_, err = f.WriteString("\n" + line)
 	return err
 }
