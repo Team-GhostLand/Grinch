@@ -1,11 +1,9 @@
-/*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -16,22 +14,51 @@ import (
 	cp "github.com/otiai10/copy"
 )
 
-// exportCmd represents the export command
 var exportCmd = &cobra.Command{
 	Use:     "export [modpack]",
 	Aliases: []string{"e", "exp", "xprt", "x"},
-	Short:   "A brief description of your command",
-	Long: `EXPORT: A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short:   "Exports your Grinch project as an Mrpack",
+	//Long: `TODO`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		//--PARSING ARGS/FLAGS--
-		em := trans.Quick //TODO: Get this from args
-		to := ""          //TODO: Get this from args
+		mode_flag_parese_error := "Couldn't determine export mode"
+		em_quick, err := cmd.Flags().GetBool("quick")
+		if err != nil {
+			util.Hndl(err, mode_flag_parese_error, false)
+		}
+		em_dev, err := cmd.Flags().GetBool("dev")
+		if err != nil {
+			util.Hndl(err, mode_flag_parese_error, false)
+		}
+		em_slim, err := cmd.Flags().GetBool("slim")
+		if err != nil {
+			util.Hndl(err, mode_flag_parese_error, false)
+		}
+		em_tweakable, err := cmd.Flags().GetBool("tweakable")
+		if err != nil {
+			util.Hndl(err, mode_flag_parese_error, false)
+		}
+
+		//There's probably a better way to do it, using Go's funky little string marker thingys (like when parsing KDL), but I don't know Go well enough to know how to use them
+		em := trans.Default
+		if em_quick {
+			em = trans.Quick
+		}
+		if em_dev {
+			em = trans.Dev
+		}
+		if em_slim {
+			em = trans.Slim
+		}
+		if em_tweakable {
+			em = trans.Tweakable
+		}
+
+		to, err := cmd.Flags().GetString("to")
+		if err != nil {
+			log.Println("WARN: Couldn't parse the --to flag - will act like it wasn't there")
+		}
 
 		if len(args) > 1 {
 			util.Hndl(errors.New(fmt.Sprint(len(args))+" is more than the maximum of 1\n[TIP: If you want to input a space without it being interpreted as an argument separator, prefix it with \\ or surround the entire piece of text containing space(s) with quotation marks]"), "Too many arguments", false)
@@ -71,13 +98,19 @@ to quickly create a Cobra application.`,
 		defer os.RemoveAll(util.Tempdir)
 
 		//--TRANSFORMS--
+		file_transform_error := "Couldn't execute the file transforms necessary by your export mode"
+		json_transform_error := "Couldn't execute the JSON transforms necessary by your export mode"
 		if em == trans.Default {
-			trans.ResolveServerRemovals()
+			err = trans.ResolveServerRemovals()
+			util.Hndl(err, file_transform_error, true)
 		} else if em == trans.Dev {
-			trans.DoExportJsonTransforms(em)
-			trans.SwapServerGitToDev()
-		} else if em != trans.Quick { //ie. slim or tweakable - where (and also in dev, but that was done above) we have to do some transforms
-			trans.DoExportJsonTransforms(em)
+			err = trans.DoExportJsonTransforms(em)
+			util.Hndl(err, json_transform_error, true)
+			err = trans.SwapServerGitToDev()
+			util.Hndl(err, file_transform_error, true)
+		} else if em != trans.Quick { //ie. slim or tweakable - where (and also in dev, but that was done above) we have to do some JSON transforms
+			err = trans.DoExportJsonTransforms(em)
+			util.Hndl(err, json_transform_error, true)
 		} //else: it's --quick mode, so we do nothing
 
 		//--ZIP THAT BODYBAG UP--
@@ -95,18 +128,13 @@ to quickly create a Cobra application.`,
 func init() {
 	rootCmd.AddCommand(exportCmd)
 
-	// Here you will define your flags and configuration settings.
+	exportCmd.Flags().Bool("default", false, "Default mode: Makes your modpack a fully standards-compliant Mrpack, that works flawlessly in both standards-compliant client launchers (that's important for later) and server-side Modrinth loaders. Replaces the non-standard (but much easier for us to operate on) server_overrides/REMOVALS.txt file with a proper client_overrides/ directory. Anything else (like what mods are optional, etc.) should alreadly be configured to be standards-compliant, if you used grinch import (and had all the prefixes setup correcly) when turning your Mrpack into a Grinch project. You don't need to specify this flag explicitly - in fact, the code doesn't even check for its presence (apart from making sure it wasn't combined with other mode flags), due to the fact that this is the default behaviour. Cannot be combined with other mode flags.")
+	exportCmd.Flags().BoolP("quick", "q", false, "Quick mode: Much quicker, as it doesn't do any file/JSON transforms whatsoever. Sufficient if you're exporting it for client-side only or if your server's Modrinth loader can understand the non-standard server_overrides/REMOVALS.txt file. Cannot be combined with other mode flags.")
+	exportCmd.Flags().BoolP("dev", "d", false, "Dev mode: Transforms JSON and files in such a way that makes your pack suitable for development using Modrinth's official launcher. Replaces server_overrides/ with overrides/.SERVERSIDE (becasue otherwise Modrinth launcher would discard them, due to it being a client-side launcher) and marks any client-unsupported mod as client-required (same reason). These steps will later be reversed when running grinch import (though the latter requires you to have prefixes configured correctly, which Grinch won't help you with - thankfully, you only need to do this once and they'll be persisted across future imports/exports). Cannot be combined with other mode flags.")
+	exportCmd.Flags().BoolP("slim", "s", false, "Slim mode: Marks every client-optional mod as client-unsupported. This is done to mimick the standards-compliant behaviour of „letting users choose whether they want to install optional mods” within the Modrinth launcher (which - hilariously - isn't compliant with Modrinth's own standard), by letting the users pick whether they want a „full” modpack experience or a „slim” one (if you provide both files, of course). Since this option only targets clients (or, one specific client, really), we don't do any extra transforms to ensure proper server support (ie. server_overrides/REMOVALS.txt stays). Cannot be combined with other mode flags.")
+	exportCmd.Flags().BoolP("tweakable", "t", false, "Tweakable mode: Marks every client-optional mod as disabled. This is done to mimick the standards-compliant behaviour of „letting users choose whether they want to install optional mods” within the Modrinth launcher (which - hilariously - isn't compliant with Modrinth's own standard), by letting the users manually re-enable mods that they want. Since this option only targets clients (or, one specific client, really), we don't do any extra transforms to ensure proper server support (ie. server_overrides/REMOVALS.txt stays). Cannot be combined with other mode flags.")
+	exportCmd.Flags().StringP("to", "T", "", "Renames the output file. Cannot be used in --dev mode, as that runs the risk of accidentially importing your Mrpack over a wrong Grinch project later down the line.")
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// exportCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	//exportCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	exportCmd.Flags().BoolP("quick", "q", false, "faster")
-	exportCmd.Flags().BoolP("dev", "d", false, "dev mode")
-	exportCmd.Flags().BoolP("slim", "s", false, "SE")
-	exportCmd.Flags().BoolP("tweakable", "t", false, "SE+")
-	exportCmd.Flags().StringP("to", "T", "", "output file")
+	exportCmd.MarkFlagsMutuallyExclusive("to", "dev")
+	exportCmd.MarkFlagsMutuallyExclusive("quick", "dev", "slim", "tweakable", "default")
 }

@@ -27,7 +27,7 @@ func Hndl(err error, with string, cleanup bool) {
 func GetExportName(mp *ModpackDefinition, nameOverride string) string {
 	ext := "mrpack"
 	if nameOverride != "" {
-		return EnsureExtension("", nameOverride)
+		return EnsureExtension(nameOverride, ext)
 	} else if mp.NameOut != "" {
 		return EnsureExtension(mp.NameOut, ext)
 	} else {
@@ -35,7 +35,7 @@ func GetExportName(mp *ModpackDefinition, nameOverride string) string {
 	}
 }
 
-func EnsureExtension(fname string, ext string) string {
+func EnsureExtension(fname, ext string) string {
 	if strings.HasSuffix(fname, "."+ext) {
 		return fname
 	} else {
