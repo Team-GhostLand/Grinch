@@ -98,20 +98,18 @@ var exportCmd = &cobra.Command{
 		defer os.RemoveAll(util.Tempdir)
 
 		//--TRANSFORMS--
+		err = trans.DoExportJsonTransforms(em)
+		util.Hndl(err, "Couldn't execute the JSON transforms necessary by your export mode", true)
+
 		file_transform_error := "Couldn't execute the file transforms necessary by your export mode"
-		json_transform_error := "Couldn't execute the JSON transforms necessary by your export mode"
 		if em == trans.Default {
 			err = trans.ResolveServerRemovals()
 			util.Hndl(err, file_transform_error, true)
-		} else if em == trans.Dev {
-			err = trans.DoExportJsonTransforms(em)
-			util.Hndl(err, json_transform_error, true)
+		}
+		if em == trans.Dev {
 			err = trans.SwapServerGitToDev()
 			util.Hndl(err, file_transform_error, true)
-		} else if em != trans.Quick { //ie. slim or tweakable - where (and also in dev, but that was done above) we have to do some JSON transforms
-			err = trans.DoExportJsonTransforms(em)
-			util.Hndl(err, json_transform_error, true)
-		} //else: it's --quick mode, so we do nothing
+		}
 
 		//--ZIP THAT BODYBAG UP--
 		_, err = util.IsSafelyCreateable(exn)

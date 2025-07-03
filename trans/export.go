@@ -21,5 +21,13 @@ func ResolveServerRemovals() error {
 }
 
 func DoExportJsonTransforms(em ExportMode) error {
-	return errors.New("not yet implemented")
+	if em == Default || em == Quick {
+		return nil //They don't have any JSON transforms - early-return
+	}
+
+	if em == Dev {
+		return errors.New("not yet implemented")
+	}
+
+	return errors.New("not yet implemented") //We don't care about the other modes yet - I'm under a THIGHT deadline.
 }
