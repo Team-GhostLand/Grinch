@@ -40,7 +40,7 @@ var importCmd = &cobra.Command{
 			util.Hndl(errors.New("chosen modpack "+mp.Name+" has no path associated with it"), "Couldn't select modpack", false)
 		}
 
-		mrpack_path, err := util.FindNewMrpack(args, ".", wcf) //Because this is an inherently machine-tied operation (.gr-workspace should be .gitignored and if you manually insert a path, when you're probably already doing it using your OS's path conventions), there's no need to do filepath.FrmSlash()
+		mrpack_path, err := util.FindNewMrpack(args, ".", util.GrWorkspaceFileLocation, wcf) //Because this is an inherently machine-tied operation (.gr-workspace should be .gitignored - and if you manually inserted a path, when you're probably already doing it using your OS's path conventions), there's no need to do filepath.FromSlash()
 		if mrpack_path == "" {
 			if err == nil {
 				err = errors.New("no undiscovered (ie. unlisted in .gr-workspace) mrpacks present in your working directory")

@@ -82,12 +82,12 @@ func AppendToWorkspaceConfig(line, path string) error {
 	return err
 }
 
-func FindNewMrpack(cmd_args []string, path string, wcf WorkspaceConfigFile) (string, error) {
+func FindNewMrpack(cmd_args []string, dir_path, wcf_path string, wcf WorkspaceConfigFile) (string, error) {
 	if len(cmd_args) > 0 {
-		return cmd_args[0], AppendToWorkspaceConfig(cmd_args[0], path)
+		return cmd_args[0], AppendToWorkspaceConfig(cmd_args[0], wcf_path)
 	}
 
-	files, err := os.ReadDir(filepath.FromSlash(path))
+	files, err := os.ReadDir(filepath.FromSlash(dir_path))
 	if err != nil {
 		return "", err //This is a „true error”
 	}
@@ -96,7 +96,7 @@ func FindNewMrpack(cmd_args []string, path string, wcf WorkspaceConfigFile) (str
 		if !strings.HasSuffix(f.Name(), ".mrpack") {
 			continue
 		}
-		known, err := CheckAndAddKnownMrpack(f.Name(), path, wcf)
+		known, err := CheckAndAddKnownMrpack(f.Name(), wcf_path, wcf)
 		if !known {
 			return f.Name(), err //Even if err != nil, the search was sucesful, so we should always check for that first (and optionally warn that appending failed, if err != nil)
 		}
