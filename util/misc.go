@@ -5,10 +5,8 @@ import (
 	"io/fs"
 	"log"
 	"os"
-	"strings"
 )
 
-// Various file locations that should stay consistent within the app
 const (
 	Tempdir                 = ".temp"
 	Backup                  = ".old"
@@ -29,14 +27,6 @@ func Hndl(err error, with string, cleanup bool) {
 	}
 }
 
-func EnsureExtension(fname, ext string) string {
-	if strings.HasSuffix(fname, "."+ext) {
-		return fname
-	} else {
-		return fname + "." + ext
-	}
-}
-
 func IsSafelyCreateable(path string) (bool, error) {
 	_, err := os.Stat(path)
 
@@ -50,9 +40,4 @@ func IsSafelyCreateable(path string) (bool, error) {
 	//If the error wasn't NIL, then Stat was succesful - ie. the direcotry/file must, logically, exist
 	return false, fs.ErrExist
 
-}
-
-func StripFirstPathElement(path string) string {
-	parts := strings.SplitN(path, "/", 2)
-	return parts[1]
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type MrIndexModSideSupport string
@@ -14,15 +15,17 @@ const (
 	MssUnsupported MrIndexModSideSupport = "unsupported"
 )
 
+type MrIndexModSideSupportPair struct {
+	Client MrIndexModSideSupport `json:"client"`
+	Server MrIndexModSideSupport `json:"server"`
+}
+
 type MrIndexModInstance struct {
-	Path   string            `json:"path"`
-	Hashes map[string]string `json:"hashes"`
-	Side   struct {
-		Client MrIndexModSideSupport `json:"client"`
-		Server MrIndexModSideSupport `json:"server"`
-	} `json:"env"`
-	Sources []string `json:"downloads"`
-	Size    int      `json:"fileSize"`
+	Path    string                    `json:"path"`
+	Hashes  map[string]string         `json:"hashes"`
+	Side    MrIndexModSideSupportPair `json:"env"`
+	Sources []string                  `json:"downloads"`
+	Size    int                       `json:"fileSize"`
 }
 
 type MrIndex struct {
@@ -71,6 +74,18 @@ func DoServersideSupportJsonTransforms(mi *MrIndex, from, to MrIndexModSideSuppo
 			mi.Mods[i].Side.Server = to
 			if disable {
 				mi.Mods[i].Path = EnsureExtension(m.Path, "disabled")
+			}
+		}
+	}
+}
+
+func DoPrefixSideSupportJsonTransforms(mi *MrIndex, predicates map[string]MrIndexModSideSupportPair, p string) {
+	for i, m := range mi.Mods {
+		if strings.HasPrefix(IsolateEndPathElement(m.Path), p) {
+			for p, s := range predicates {
+				if strings.HasPrefix(m.Path, p) {
+					mi.Mods[i].Side = s
+				}
 			}
 		}
 	}

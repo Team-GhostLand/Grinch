@@ -74,14 +74,21 @@ var importCmd = &cobra.Command{
 		}
 
 		//--THE ACTUAL IMPORT PROCEDURE--
-		err = trans.DoImportJsonTransforms()
+		mi, err := util.GetMrIndexJson(util.MrIndexFileLocation)
 		if err != nil {
 			util.Hndl(err, "Couldn't execute the JSON transforms necessary for import", true)
 		}
+		util.DoPrefixSideSupportJsonTransforms(&mi, trans.ImportTransformPredicates, "GR_")
+		err = util.SetMrIndexJson(mi, util.MrIndexFileLocation)
+		if err != nil {
+			util.Hndl(err, "Couldn't execute the JSON transforms necessary for import", true)
+		}
+
 		err = trans.SwapServerDevToGit()
 		if err != nil {
 			util.Hndl(err, "Couldn't execute the file transforms necessary for import", true)
 		}
+
 		//TODO: Constraints
 
 		err = os.Rename(util.Tempdir, folder_path)
