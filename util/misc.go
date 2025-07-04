@@ -16,6 +16,7 @@ const (
 	DevSvOvrrDir            = Tempdir + "/overrides/.SERVERSIDE"
 	MrIndexFileLocation     = Tempdir + "/modrinth.index.json"
 	GrWorkspaceFileLocation = ".gr-workspace"
+	GrProjectFileLocation   = "grinch.kdl"
 	ReasonablePerms         = 0755
 )
 
@@ -28,17 +29,6 @@ func Hndl(err error, with string, cleanup bool) {
 	}
 }
 
-func GetExportName(mp *ModpackDefinition, nameOverride string) string {
-	ext := "mrpack"
-	if nameOverride != "" {
-		return EnsureExtension(nameOverride, ext)
-	} else if mp.NameOut != "" {
-		return EnsureExtension(mp.NameOut, ext)
-	} else {
-		return mp.Name + "." + ext
-	}
-}
-
 func EnsureExtension(fname, ext string) string {
 	if strings.HasSuffix(fname, "."+ext) {
 		return fname
@@ -47,8 +37,8 @@ func EnsureExtension(fname, ext string) string {
 	}
 }
 
-func IsSafelyCreateable(name string) (bool, error) {
-	_, err := os.Stat(name)
+func IsSafelyCreateable(path string) (bool, error) {
+	_, err := os.Stat(path)
 
 	if err != nil {
 		if errors.Is(err, fs.ErrNotExist) { //If we got a NotExists error - great! There's nothing. Can safely write.

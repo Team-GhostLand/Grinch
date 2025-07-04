@@ -6,31 +6,33 @@ import (
 )
 
 func TestConfigLoad() {
-	pcf, err := LoadProjectConfig()
+	pcf, err := LoadProjectConfig(GrProjectFileLocation)
 	Hndl(err, "Couldn't load project config", false)
 	fmt.Printf("%#v\n", pcf)
 }
 
 func TestWkspcLoad1() {
-	s, err := LoadWorkspaceConfig()
+	wcf, err := LoadWorkspaceConfig(GrWorkspaceFileLocation)
 	Hndl(err, "Couldn't load workspace config", false)
-	log.Println(s)
+	log.Println(wcf)
 }
 
 func TestSelection() {
-	pcf, err := LoadProjectConfig()
+	pcf, err := LoadProjectConfig(GrProjectFileLocation)
 	Hndl(err, "Couldn't load project config", false)
-	s, err := SelectModpack(pcf)
+	wcf, err := LoadWorkspaceConfig(GrWorkspaceFileLocation)
+	Hndl(err, "Couldn't load workspace config", false)
+	mp, err := SelectModpack(pcf, wcf)
 	Hndl(err, "Couldn't select modpack", false)
-	log.Println(s.Path)
+	log.Println(mp.Path)
 }
 
 func TestJsonTransforms() {
-	mi, err := GetMrIndexJson()
+	mi, err := GetMrIndexJson(MrIndexFileLocation)
 	Hndl(err, "Couldn't open JSON", false)
 	log.Println("PRE:\n", mi)
-	DoClientJsonTransforms(&mi, MssRequired, MssUnsupported, true)
+	DoClientsideSupportJsonTransforms(&mi, MssRequired, MssUnsupported, true)
 	log.Println("POST:\n", mi)
-	err = SetMrIndexJson(mi)
+	err = SetMrIndexJson(mi, MrIndexFileLocation)
 	Hndl(err, "Couldn't save JSON", false)
 }

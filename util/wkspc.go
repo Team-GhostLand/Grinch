@@ -5,23 +5,24 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
 type WorkspaceConfigFile = []string
 
-func LoadWorkspaceConfig() (WorkspaceConfigFile, error) {
+func LoadWorkspaceConfig(path string) (WorkspaceConfigFile, error) {
 	generic_error := "Could neither load nor create a .gr-workspace file: "
 	must_reload := false
 
-	data_bin, err := os.ReadFile(GrWorkspaceFileLocation)
+	data_bin, err := os.ReadFile(filepath.FromSlash(path))
 
 	if err != nil {
 		if !errors.Is(err, fs.ErrNotExist) { //To see if we got ANY OTHER KIND of error than „not exists” (that's different from what directly checking fs.ErrExist does) - these errors are irrecoverable, so we crash
 			return nil, errors.New(generic_error + err.Error())
 		}
 
-		file, err := os.Create(GrWorkspaceFileLocation)
+		file, err := os.Create(filepath.FromSlash(path))
 		if err != nil {
 			return nil, errors.New(generic_error + err.Error())
 		}
@@ -33,7 +34,7 @@ func LoadWorkspaceConfig() (WorkspaceConfigFile, error) {
 	}
 
 	if must_reload {
-		if data_bin, err = os.ReadFile(GrWorkspaceFileLocation); err != nil {
+		if data_bin, err = os.ReadFile(filepath.FromSlash(path)); err != nil {
 			return nil, errors.New("Couldn't load a just-created .gr-workspace file" + err.Error())
 		}
 	}
@@ -51,7 +52,7 @@ func LoadWorkspaceConfig() (WorkspaceConfigFile, error) {
 	return lines, nil
 }
 
-func CheckAndAddKnownMrpack(name string, wcf WorkspaceConfigFile) (bool, error) {
+func CheckAndAddKnownMrpack(name, path string, wcf WorkspaceConfigFile) (bool, error) {
 	for i, l := range wcf {
 		if i < 3 {
 			continue //We only care about 4th line (3rd index) and beyond
@@ -61,7 +62,7 @@ func CheckAndAddKnownMrpack(name string, wcf WorkspaceConfigFile) (bool, error) 
 		}
 	}
 
-	err := AppendToWorkspaceConfig(name)
+	err := AppendToWorkspaceConfig(name, path)
 	return false, err
 }
 
@@ -70,8 +71,8 @@ func PopulateWorkspaceConfigFile(file os.File) error {
 	return err
 }
 
-func AppendToWorkspaceConfig(line string) error {
-	f, err := os.OpenFile(GrWorkspaceFileLocation, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+func AppendToWorkspaceConfig(line, path string) error {
+	f, err := os.OpenFile(filepath.FromSlash(path), os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		return err
 	}
@@ -81,17 +82,12 @@ func AppendToWorkspaceConfig(line string) error {
 	return err
 }
 
-func FindNewMrpack(cmd_args []string) (string, error) {
+func FindNewMrpack(cmd_args []string, path string, wcf WorkspaceConfigFile) (string, error) {
 	if len(cmd_args) > 0 {
-		return cmd_args[0], AppendToWorkspaceConfig(cmd_args[0])
+		return cmd_args[0], AppendToWorkspaceConfig(cmd_args[0], path)
 	}
 
-	wcf, err := LoadWorkspaceConfig()
-	if err != nil {
-		return "", err //This is a „true error”
-	}
-
-	files, err := os.ReadDir(".")
+	files, err := os.ReadDir(filepath.FromSlash(path))
 	if err != nil {
 		return "", err //This is a „true error”
 	}
@@ -100,7 +96,7 @@ func FindNewMrpack(cmd_args []string) (string, error) {
 		if !strings.HasSuffix(f.Name(), ".mrpack") {
 			continue
 		}
-		known, err := CheckAndAddKnownMrpack(f.Name(), wcf)
+		known, err := CheckAndAddKnownMrpack(f.Name(), path, wcf)
 		if !known {
 			return f.Name(), err //Even if err != nil, the search was sucesful, so we should always check for that first (and optionally warn that appending failed, if err != nil)
 		}

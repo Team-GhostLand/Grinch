@@ -3,6 +3,7 @@ package util
 import (
 	"errors"
 	"os"
+	"path/filepath"
 
 	"github.com/sblinch/kdl-go"
 )
@@ -28,9 +29,9 @@ type FilterSet struct {
 	Disallowed []string `kdl:"disallowed"`
 }
 
-func LoadProjectConfig() (ProjectConfigFile, error) {
+func LoadProjectConfig(path string) (ProjectConfigFile, error) {
 	var pcf ProjectConfigFile
-	data, err := os.ReadFile("grinch.kdl")
+	data, err := os.ReadFile(filepath.FromSlash(path))
 	if err != nil {
 		return pcf, err
 	}
@@ -44,11 +45,7 @@ func LoadProjectConfig() (ProjectConfigFile, error) {
 	return pcf, nil
 }
 
-func SelectModpack(pcf ProjectConfigFile) (*ModpackDefinition, error) {
-	wcf, err := LoadWorkspaceConfig()
-	if err != nil {
-		return nil, err
-	}
+func SelectModpack(pcf ProjectConfigFile, wcf WorkspaceConfigFile) (*ModpackDefinition, error) {
 
 	if wcf[2] == "" && pcf.Default == "" && len(pcf.MPs.MP) > 1 {
 		return nil, errors.New("you don't have any modpacks selected in neither workspace nor project settings, but you have more than one defined, so we cannot auto-select")
@@ -75,4 +72,15 @@ func FindModpackByName(pcf ProjectConfigFile, name string) (*ModpackDefinition, 
 	}
 
 	return nil, errors.New("modpack " + name + " isn't defined anywhere in grinch.kdl")
+}
+
+func GetExportName(mp *ModpackDefinition, nameOverride string) string {
+	ext := "mrpack"
+	if nameOverride != "" {
+		return EnsureExtension(nameOverride, ext)
+	} else if mp.NameOut != "" {
+		return EnsureExtension(mp.NameOut, ext)
+	} else {
+		return mp.Name + "." + ext
+	}
 }

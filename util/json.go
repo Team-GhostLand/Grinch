@@ -35,9 +35,9 @@ type MrIndex struct {
 	Deps map[string]string    `json:"dependencies"`
 }
 
-func GetMrIndexJson() (MrIndex, error) {
+func GetMrIndexJson(path string) (MrIndex, error) {
 	var mi MrIndex
-	data, err := os.ReadFile(filepath.FromSlash(MrIndexFileLocation))
+	data, err := os.ReadFile(filepath.FromSlash(path))
 	if err != nil {
 		return mi, err
 	}
@@ -45,20 +45,30 @@ func GetMrIndexJson() (MrIndex, error) {
 	return mi, err
 }
 
-func SetMrIndexJson(mi MrIndex) error {
-	//data, err := os.ReadFile("testindex.json")
+func SetMrIndexJson(mi MrIndex, path string) error {
 	data, err := json.MarshalIndent(mi, "", "  ")
 	if err != nil {
 		return err
 	}
 
-	return os.WriteFile(filepath.FromSlash(MrIndexFileLocation), data, ReasonablePerms)
+	return os.WriteFile(filepath.FromSlash(path), data, ReasonablePerms)
 }
 
-func DoClientJsonTransforms(mi *MrIndex, from, to MrIndexModSideSupport, disable bool) {
+func DoClientsideSupportJsonTransforms(mi *MrIndex, from, to MrIndexModSideSupport, disable bool) {
 	for i, m := range mi.Mods {
 		if m.Side.Client == from {
 			mi.Mods[i].Side.Client = to
+			if disable {
+				mi.Mods[i].Path = EnsureExtension(m.Path, "disabled")
+			}
+		}
+	}
+}
+
+func DoServersideSupportJsonTransforms(mi *MrIndex, from, to MrIndexModSideSupport, disable bool) {
+	for i, m := range mi.Mods {
+		if m.Side.Server == from {
+			mi.Mods[i].Side.Server = to
 			if disable {
 				mi.Mods[i].Path = EnsureExtension(m.Path, "disabled")
 			}

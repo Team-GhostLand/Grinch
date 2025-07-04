@@ -35,19 +35,19 @@ func DoExportJsonTransforms(em ExportMode) error {
 		return nil //They don't need any JSON transforms - early-return
 	}
 
-	mi, err := util.GetMrIndexJson()
+	mi, err := util.GetMrIndexJson(util.MrIndexFileLocation)
 	if err != nil {
 		return err
 	}
 
 	switch em {
 	case EmDev:
-		util.DoClientJsonTransforms(&mi, util.MssUnsupported, util.MssRequired, false)
+		util.DoClientsideSupportJsonTransforms(&mi, util.MssUnsupported, util.MssRequired, false)
 	case EmSlim:
-		util.DoClientJsonTransforms(&mi, util.MssOptional, util.MssUnsupported, false)
+		util.DoClientsideSupportJsonTransforms(&mi, util.MssOptional, util.MssUnsupported, false)
 	case EmTweakable:
-		util.DoClientJsonTransforms(&mi, util.MssOptional, util.MssOptional, true)
+		util.DoClientsideSupportJsonTransforms(&mi, util.MssOptional, util.MssOptional, true)
 	}
 
-	return util.SetMrIndexJson(mi)
+	return util.SetMrIndexJson(mi, util.MrIndexFileLocation)
 }

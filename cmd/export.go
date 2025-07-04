@@ -65,12 +65,14 @@ var exportCmd = &cobra.Command{
 		}
 
 		//--CONFIGS--
-		pcf, err := util.LoadProjectConfig()
-		util.Hndl(err, "Couldn't load config", false)
+		pcf, err := util.LoadProjectConfig(util.GrProjectFileLocation)
+		util.Hndl(err, "Couldn't load project config", false)
+		wcf, err := util.LoadWorkspaceConfig(util.GrWorkspaceFileLocation)
+		util.Hndl(err, "Couldn't load workspace config", false)
 
 		var mp *util.ModpackDefinition
 		if len(args) == 0 {
-			mp, err = util.SelectModpack(pcf)
+			mp, err = util.SelectModpack(pcf, wcf)
 			util.Hndl(err, "Couldn't select modpack", false)
 		} else {
 			if em == trans.EmDev {
@@ -125,7 +127,7 @@ var exportCmd = &cobra.Command{
 		}
 
 		//--...AND MARK IT AS KNOWN--
-		util.AppendToWorkspaceConfig(name)
+		util.AppendToWorkspaceConfig(name, util.GrWorkspaceFileLocation)
 		if err != nil {
 			log.Println("WARN: Couldn't mark your exported mrpack as known - it may get picked up by grinch import by accident")
 		}
