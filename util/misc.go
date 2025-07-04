@@ -11,6 +11,7 @@ import (
 // Various file locations that should stay consistent within the app
 const (
 	Tempdir                 = ".temp"
+	Backup                  = ".old"
 	GitSvOvrrDir            = Tempdir + "/server-overrides"
 	DevSvOvrrDir            = Tempdir + "/overrides/.SERVERSIDE"
 	MrIndexFileLocation     = Tempdir + "/modrinth.index.json"

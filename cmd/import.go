@@ -13,7 +13,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// importCmd represents the import command
 var importCmd = &cobra.Command{
 	Use:     "import [name]",
 	Aliases: []string{"i", "imp"},
@@ -39,7 +38,7 @@ var importCmd = &cobra.Command{
 			util.Hndl(errors.New("chosen modpack "+mp.Name+" has no path associated with it"), "Couldn't select modpack", false)
 		}
 
-		mrpack_path, err := util.FindNewMrpack(args)
+		mrpack_path, err := util.FindNewMrpack(args) //Because this is an inherently machine-tied operation (.gr-workspace should be .gitignored and if you manually insert a path, when you're probably already doing it using your OS's path conventions), there's no need to do filepath.FrmSlash()
 		if mrpack_path == "" {
 			if err == nil {
 				err = errors.New("no undiscovered (ie. unlisted in .gr-workspace) mrpacks present in your working directory")
@@ -49,6 +48,17 @@ var importCmd = &cobra.Command{
 		if err != nil {
 			log.Println("WARN: Found an mrpack to import (" + mrpack_path + "), but couldn't mark it as known - it may get accidentially picked up by another grinch import in the future")
 		}
+
+		//--BACKUP OLD PROJECT--
+		_, err = util.IsSafelyCreateable(util.Tempdir)
+		if err != nil {
+			util.Hndl(err, "Cannot safely backup your previous "+folder_path+" as .old", true)
+		}
+		err = os.Rename(folder_path, util.Backup)
+		if err != nil {
+			util.Hndl(err, "Couldn't backup your previous "+folder_path+" as .old", true)
+		}
+		defer os.RemoveAll(util.Backup) //Defer won't run if the app crashed via a util.Hndl call, therefore it's safe to blindly defer the removal of backups, without checking whether said backups might actually come in handy.
 
 		//--UNZIP--
 		_, err = util.IsSafelyCreateable(util.Tempdir)
@@ -61,7 +71,7 @@ var importCmd = &cobra.Command{
 			util.Hndl(err, "Cannot unzip "+mrpack_path+" to "+util.Tempdir, true) //Although there is no need to cleanup if unzip fails COMPLETELY, it might also fail partially (and leave a half-full .temp folder behind) - hence the true here
 		}
 
-		//--TRANSFORMS--
+		//--THE ACTUAL IMPORT PROCEDURE--
 		err = trans.DoImportJsonTransforms()
 		if err != nil {
 			util.Hndl(err, "Couldn't execute the JSON transforms necessary for import", true)
@@ -72,14 +82,9 @@ var importCmd = &cobra.Command{
 		}
 		//TODO: Constraints
 
-		//--TURN TEMP INTO THE INTENDED DIR--
-		err = os.RemoveAll(folder_path)
-		if err != nil {
-			util.Hndl(err, "Couldn't remove your old "+folder_path, true)
-		}
 		err = os.Rename(util.Tempdir, folder_path)
 		if err != nil {
-			util.Hndl(err, "Couldn't turn "+util.Tempdir+" into "+folder_path, false) //We don't want to remove the .temp if this happens, so that the users can rename it themselves - hence the false here
+			util.Hndl(err, "Couldn't turn "+util.Tempdir+" into "+folder_path+", please rename it manually", false)
 		}
 	},
 }
