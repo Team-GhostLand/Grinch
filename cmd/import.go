@@ -53,48 +53,34 @@ var importCmd = &cobra.Command{
 
 		//--BACKUP OLD PROJECT--
 		_, err = util.IsSafelyCreateable(util.Tempdir)
-		if err != nil {
-			util.Hndl(err, "Cannot safely backup your previous "+folder_path+" as .old", true)
-		}
+		util.Hndl(err, "Cannot safely backup your previous "+folder_path+" as .old", true)
+
 		err = os.Rename(folder_path, util.Backup)
-		if err != nil {
-			util.Hndl(err, "Couldn't backup your previous "+folder_path+" as .old", true)
-		}
+		util.Hndl(err, "Couldn't backup your previous "+folder_path+" as .old", true)
+
 		defer os.RemoveAll(util.Backup) //Defer won't run if the app crashed via a util.Hndl call, therefore it's safe to blindly defer the removal of backups, without checking whether said backups might actually come in handy.
 
 		//--UNZIP--
 		_, err = util.IsSafelyCreateable(util.Tempdir)
-		if err != nil {
-			util.Hndl(err, "Cannot safely create a .temp directory", false)
-		}
+		util.Hndl(err, "Cannot safely create a .temp directory", false)
 
 		err = util.Unzip(mrpack_path, util.Tempdir)
-		if err != nil {
-			util.Hndl(err, "Cannot unzip "+mrpack_path+" to "+util.Tempdir, true) //Although there is no need to cleanup if unzip fails COMPLETELY, it might also fail partially (and leave a half-full .temp folder behind) - hence the true here
-		}
+		util.Hndl(err, "Cannot unzip "+mrpack_path+" to "+util.Tempdir, true) //Although there is no need to cleanup if unzip fails COMPLETELY, it might also fail partially (and leave a half-full .temp folder behind) - hence the true here
 
 		//--THE ACTUAL IMPORT PROCEDURE--
 		mi, err := util.GetMrIndexJson(util.MrIndexFileLocation)
-		if err != nil {
-			util.Hndl(err, "Couldn't execute the JSON transforms necessary for import", true)
-		}
+		util.Hndl(err, "Couldn't execute the JSON transforms necessary for import", true)
 		util.DoPrefixSideSupportJsonTransforms(&mi, trans.ImportTransformPredicates, "GR_")
 		err = util.SetMrIndexJson(mi, util.MrIndexFileLocation)
-		if err != nil {
-			util.Hndl(err, "Couldn't execute the JSON transforms necessary for import", true)
-		}
+		util.Hndl(err, "Couldn't execute the JSON transforms necessary for import", true)
 
 		err = trans.SwapServerDevToGit()
-		if err != nil {
-			util.Hndl(err, "Couldn't execute the file transforms necessary for import", true)
-		}
-
+		util.Hndl(err, "Couldn't execute the file transforms necessary for import", true)
 		//TODO: Constraints
 
 		err = os.Rename(util.Tempdir, folder_path)
-		if err != nil {
-			util.Hndl(err, "Couldn't turn "+util.Tempdir+" into "+folder_path+", please rename it manually", false)
-		}
+		util.Hndl(err, "Couldn't turn "+util.Tempdir+" into "+folder_path+", but otheriwise completed the import - please rename it manually", false)
+
 	},
 }
 

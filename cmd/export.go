@@ -24,21 +24,13 @@ var exportCmd = &cobra.Command{
 		//--PARSING ARGS/FLAGS--
 		mode_flag_parese_error := "Couldn't determine export mode"
 		em_quick, err := cmd.Flags().GetBool("quick")
-		if err != nil {
-			util.Hndl(err, mode_flag_parese_error, false)
-		}
+		util.Hndl(err, mode_flag_parese_error, false)
 		em_dev, err := cmd.Flags().GetBool("dev")
-		if err != nil {
-			util.Hndl(err, mode_flag_parese_error, false)
-		}
+		util.Hndl(err, mode_flag_parese_error, false)
 		em_slim, err := cmd.Flags().GetBool("slim")
-		if err != nil {
-			util.Hndl(err, mode_flag_parese_error, false)
-		}
+		util.Hndl(err, mode_flag_parese_error, false)
 		em_tweakable, err := cmd.Flags().GetBool("tweakable")
-		if err != nil {
-			util.Hndl(err, mode_flag_parese_error, false)
-		}
+		util.Hndl(err, mode_flag_parese_error, false)
 
 		//There's probably a better way to do it, using Go's funky little string marker thingys (like when parsing KDL), but I don't know Go well enough to know how to use them
 		em := trans.EmDefault
@@ -59,7 +51,6 @@ var exportCmd = &cobra.Command{
 		if err != nil {
 			log.Println("WARN: Couldn't parse the --to flag - will act like it wasn't there")
 		}
-
 		if len(args) > 1 {
 			util.Hndl(errors.New(fmt.Sprint(len(args))+" is more than the maximum of 1\n[TIP: If you want to input a space without it being interpreted as an argument separator, prefix it with \\ or surround the entire piece of text containing space(s) with quotation marks]"), "Too many arguments", false)
 		}
@@ -91,14 +82,9 @@ var exportCmd = &cobra.Command{
 
 		//--TEMPDIR--
 		_, err = util.IsSafelyCreateable(util.Tempdir)
-		if err != nil {
-			util.Hndl(err, "Cannot safely create a .temp directory", false)
-		}
-
+		util.Hndl(err, "Cannot safely create a .temp directory", false)
 		err = cp.Copy(path, util.Tempdir)
-		if err != nil {
-			util.Hndl(err, "Cannot copy "+path+" to "+util.Tempdir, false)
-		}
+		util.Hndl(err, "Cannot copy "+path+" to "+util.Tempdir, false)
 
 		defer os.RemoveAll(util.Tempdir)
 
@@ -118,13 +104,9 @@ var exportCmd = &cobra.Command{
 
 		//--ZIP THAT BODYBAG UP--
 		_, err = util.IsSafelyCreateable(name)
-		if err != nil {
-			util.Hndl(err, "Cannot safely create "+name, true)
-		}
+		util.Hndl(err, "Cannot safely create "+name, true)
 		err = util.MakeZipFile(util.Tempdir, name)
-		if err != nil {
-			util.Hndl(err, "Cannot ZIP "+util.Tempdir+" to "+name, true)
-		}
+		util.Hndl(err, "Cannot ZIP "+util.Tempdir+" to "+name, true)
 
 		//--...AND MARK IT AS KNOWN--
 		util.AppendToWorkspaceConfig(name, util.GrWorkspaceFileLocation)
