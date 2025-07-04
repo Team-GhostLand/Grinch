@@ -2,6 +2,7 @@ package util
 
 import (
 	"encoding/json"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -83,8 +84,10 @@ func DoPrefixSideSupportJsonTransforms(mi *MrIndex, predicates map[string]MrInde
 	for i, m := range mi.Mods {
 		if strings.HasPrefix(IsolateEndPathElement(m.Path), p) {
 			for p, s := range predicates {
-				if strings.HasPrefix(m.Path, p) {
+				if strings.HasPrefix(IsolateEndPathElement(m.Path), p) {
+					log.Println("Found prefix " + p + " for mod: " + IsolateEndPathElement(m.Path))
 					mi.Mods[i].Side = s
+					break
 				}
 			}
 		}

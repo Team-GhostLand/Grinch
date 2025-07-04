@@ -12,12 +12,12 @@ import (
 var ImportTransformPredicates = map[string]util.MrIndexModSideSupportPair{
 	"GR_CLO_":     {Client: util.MssOptional, Server: util.MssRequired},
 	"GR_SVO_":     {Client: util.MssRequired, Server: util.MssOptional},
-	"GR_CLO_SVO_": {Client: util.MssOptional, Server: util.MssOptional},
+	"GR_CLO+SVO_": {Client: util.MssOptional, Server: util.MssOptional},
 	"GR_CLX_":     {Client: util.MssUnsupported, Server: util.MssRequired},
 	"GR_SVX_":     {Client: util.MssRequired, Server: util.MssUnsupported},
-	"GR_CLX_SVX_": {Client: util.MssUnsupported, Server: util.MssUnsupported},
-	"GR_CLO_SVX_": {Client: util.MssOptional, Server: util.MssUnsupported},
-	"GR_CLX_SVO_": {Client: util.MssUnsupported, Server: util.MssOptional},
+	"GR_CLX+SVX_": {Client: util.MssUnsupported, Server: util.MssUnsupported},
+	"GR_CLO+SVX_": {Client: util.MssOptional, Server: util.MssUnsupported},
+	"GR_CLX+SVO_": {Client: util.MssUnsupported, Server: util.MssOptional},
 }
 
 func SwapServerDevToGit() error {
