@@ -21,7 +21,7 @@ const (
 
 func SwapServerGitToDev() error {
 	if _, err := os.Stat(filepath.FromSlash(util.GitSvOvrrDir)); errors.Is(err, fs.ErrNotExist) {
-		return nil //Do nothing if there were no serever_overrides in the 1st place
+		return nil //Do nothing if there were no server-overrides in the 1st place
 	}
 	return os.Rename(filepath.FromSlash(util.GitSvOvrrDir), filepath.FromSlash(util.DevSvOvrrDir))
 }
@@ -49,6 +49,5 @@ func DoExportJsonTransforms(em ExportMode) error {
 		util.DoClientJsonTransforms(&mi, util.MssOptional, util.MssOptional, true)
 	}
 
-	err = util.SetMrIndexJson(mi)
-	return err
+	return util.SetMrIndexJson(mi)
 }

@@ -80,3 +80,31 @@ func AppendToWorkspaceConfig(line string) error {
 	_, err = f.WriteString("\n" + line)
 	return err
 }
+
+func FindNewMrpack(cmd_args []string) (string, error) {
+	if len(cmd_args) > 0 {
+		return cmd_args[0], AppendToWorkspaceConfig(cmd_args[0])
+	}
+
+	wcf, err := LoadWorkspaceConfig()
+	if err != nil {
+		return "", err //This is a „true error”
+	}
+
+	files, err := os.ReadDir(".")
+	if err != nil {
+		return "", err //This is a „true error”
+	}
+
+	for _, f := range files {
+		if !strings.HasSuffix(f.Name(), ".mrpack") {
+			continue
+		}
+		known, err := CheckAndAddKnownMrpack(f.Name(), wcf)
+		if !known {
+			return f.Name(), err //Even if err != nil, the search was sucesful, so we should always check for that first (and optionally warn that appending failed, if err != nil)
+		}
+	}
+
+	return "", nil //Not finding anything isn't an error, per say.
+}

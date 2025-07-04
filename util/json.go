@@ -42,7 +42,7 @@ func GetMrIndexJson() (MrIndex, error) {
 		return mi, err
 	}
 	err = json.Unmarshal(data, &mi)
-	return mi, err //No need for a dedicated err != nil check - if it was nil after unmarshall, we'll simply return said nil here (idk if it's idiomatic tho)
+	return mi, err
 }
 
 func SetMrIndexJson(mi MrIndex) error {
@@ -52,8 +52,7 @@ func SetMrIndexJson(mi MrIndex) error {
 		return err
 	}
 
-	err = os.WriteFile(filepath.FromSlash(MrIndexFileLocation), data, 0644)
-	return err //No need for a dedicated err != nil check - if it was nil after unmarshall, we'll simply return said nil here (idk if it's idiomatic tho)
+	return os.WriteFile(filepath.FromSlash(MrIndexFileLocation), data, ReasonablePerms)
 }
 
 func DoClientJsonTransforms(mi *MrIndex, from, to MrIndexModSideSupport, disable bool) {

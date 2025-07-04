@@ -1,7 +1,7 @@
 grinch imp
  *checks for unknown mrpacks
  *if found, adds it as known
- *2 steps above can be overriden by imp <name>
+ *2 steps above can be overriden by imp <name> (will still make it known, tho)
  *unzips into .temp
  *transforms:
   *GR_ = marks transformable
