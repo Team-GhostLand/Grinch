@@ -6,13 +6,13 @@
   "summary": "",
   "files": [
     {
-      "path": "mods/Veinminer-2.0.7.jar",
+      "path": "mods/GR_CLO_Veinminer-2.0.7.jar",
       "hashes": {
         "sha1": "4d0ce438d29eeb4cf6d2773ac120026221936df1",
         "sha512": "79930d5e182e3eb92074c3f81105ffd5ac4627cc011ed6b6d795e9cb6a31f21d2dee90f153e62b71869d3ef0a23a4479937462661154510c780ef23f3a7cecd6"
       },
       "env": {
-        "client": "optional",
+        "client": "required",
         "server": "required"
       },
       "downloads": [
@@ -651,7 +651,7 @@
       "fileSize": 74370
     },
     {
-      "path": "mods/jline4mcdsrv-0.6.3.jar",
+      "path": "mods/GR_CLX_jline4mcdsrv-0.6.3.jar",
       "hashes": {
         "sha1": "3a8bc672c0c4dd03d86a6d02d60cd14e97e1764e",
         "sha512": "5f3a02ac0356c880ac9a993679fc41dc6b1cb91af53b2566b8f207e755dbc161b62150aac9ee9a0b436d6e15e4bb882db6db2e0dcddae5384c147c98888f3aa9"
@@ -2466,14 +2466,14 @@
       "fileSize": 2124860
     },
     {
-      "path": "mods/GR_CLI_OPT_AdaptiveTooltips-1.3.0-fabric-1.20.2.jar",
+      "path": "mods/GR_CLO_SVX_AdaptiveTooltips-1.3.0-fabric-1.20.2.jar",
       "hashes": {
         "sha1": "2ff512a70c437c20523de01ea95b6fc9b164a5c0",
         "sha512": "4e7e930360a122eef64874a88f3410e5b050559782a8270a37e80803753af2ad1be6d9c6bd68f09ddb88e327428ff37f7e0230991fdecdd10a32b078934c7206"
       },
       "env": {
         "client": "required",
-        "server": "unsupported"
+        "server": "required"
       },
       "downloads": [
         "https://cdn.modrinth.com/data/wFv8yCxM/versions/MgbaLEPy/AdaptiveTooltips-1.3.0-fabric-1.20.2.jar"
