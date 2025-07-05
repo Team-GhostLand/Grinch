@@ -114,13 +114,14 @@ if [ "$1" = "update" ]; then
         echo "Uninstall failed!"
         exit 1;
     fi
+    cd .. #CDs don't carry over between shell excutions - we need to once again exit from the (now-deleted) project folder into Specre's main dir, or sudo -E bash will complain about starting from a non-existent directory.
     
     echo "  ---- CALLING UPON SPECTRE TO INSTALL THE NEWEST VERSION ----";
     if [ -z "$PROJECT_NAME" ]; then
         PROJECT_NAME="grinch"
     fi
     sleep 3;
-    export SCRIPT_NAME="scripts/installer" GIT="https://github.com/Team-GhostLand/Grinch.git" && curl -fsSL https://raw.githubusercontent.com/Team-GhostLand/Spectre/master/universal-installer-scaffolding.sh | sudo -E bash
+    export PROJECT_NAME=$PROJECT_NAME INSTALL_PATH=$INSTALL_PATH SCRIPT_NAME="scripts/installer" GIT="https://github.com/Team-GhostLand/Grinch.git" && curl -fsSL https://raw.githubusercontent.com/Team-GhostLand/Spectre/master/universal-installer-scaffolding.sh | sudo -E bash
     exit;
 fi
 
