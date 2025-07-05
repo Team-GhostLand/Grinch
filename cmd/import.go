@@ -16,8 +16,8 @@ import (
 var importCmd = &cobra.Command{
 	Use:     "import [name]",
 	Aliases: []string{"i", "imp"},
-	Short:   "Imports an mrpack, that you previously exported in --dev mode (and presumably made some changes), back as a Grinch project. If you want to use it to start a new Grinch project - you can, but some preparations are needed beforehand. Docs coming soon.",
-	//Long: `TODO`,
+	Short:   "Imports an mrpack, that you previously exported in dev-mode, back as a Grinch project.",
+	Long:    "Imports an mrpack, that you previously exported in --dev mode (and presumably made some changes), back as a Grinch project. If you want to use it to start an entirely new Grinch project based on an existing Mrpack - you can, but some preparations are needed beforehand (such as setting up prefixes, making sure to use our format for override layering, or (in case it's the 1st project in the repo) setting up project config). Please refer to the README on how to do said preparations.",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		//--PARSING ARGS--

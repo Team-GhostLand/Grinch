@@ -18,7 +18,6 @@ var exportCmd = &cobra.Command{
 	Use:     "export [modpack]",
 	Aliases: []string{"e", "exp", "xprt", "x"},
 	Short:   "Exports your Grinch project as an Mrpack",
-	//Long: `TODO`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		//--PARSING ARGS/FLAGS--
@@ -123,9 +122,10 @@ func init() {
 	exportCmd.Flags().BoolP("quick", "q", false, "Quick mode: Much quicker, as it doesn't do any file/JSON transforms whatsoever. Sufficient if you're exporting it for client-side only or if your server's Modrinth loader can understand the non-standard server-overrides/REMOVALS.txt file. Cannot be combined with other mode flags.")
 	exportCmd.Flags().BoolP("dev", "d", false, "Dev mode: Transforms JSON and files in such a way that makes your pack suitable for development using Modrinth's official launcher. Replaces server-overrides/ with overrides/.SERVERSIDE (becasue otherwise Modrinth launcher would discard them, due to it being a client-side launcher) and marks any client-unsupported mod as client-required (same reason). These steps will later be reversed when running grinch import (though the latter requires you to have prefixes configured correctly - please do grinch import --help for more details). Cannot be combined with other mode flags.")
 	exportCmd.Flags().BoolP("slim", "s", false, "Slim mode: Marks every client-optional mod as client-unsupported. This is done to mimick the standards-compliant behaviour of „letting users choose whether they want to install optional mods” within the Modrinth launcher (which - hilariously - isn't compliant with Modrinth's own standard), by letting the users pick whether they want a „full” modpack experience or a „slim” one (if you provide both files, of course). Since this option only targets clients (or, one specific client, really), we don't do any extra transforms to ensure proper server support (ie. server-overrides/REMOVALS.txt stays). Cannot be combined with other mode flags.")
-	exportCmd.Flags().BoolP("tweakable", "t", false, "Tweakable mode: Marks every client-optional mod as disabled. This is done to mimick the standards-compliant behaviour of „letting users choose whether they want to install optional mods” within the Modrinth launcher (which - hilariously - isn't compliant with Modrinth's own standard), by letting the users manually re-enable mods that they want. Since this option only targets clients (for that matte, THIS MODE IS COMPLETLEY INCOMPATIBLE WITH SERVERS!!!, as mod disabling targets both sides, so server-required mods may get hit by accident), we don't do any extra transforms to ensure proper server support (ie. server-overrides/REMOVALS.txt stays). Cannot be combined with other mode flags.")
+	exportCmd.Flags().BoolP("tweakable", "t", false, "Tweakable mode: Marks every client-optional mod as disabled. This is done to mimick the standards-compliant behaviour of „letting users choose whether they want to install optional mods” within the Modrinth launcher (which - hilariously - isn't compliant with Modrinth's own standard), by letting the users manually re-enable mods that they want. Since this option only targets clients (for that matter, THIS MODE IS COMPLETLEY INCOMPATIBLE WITH SERVERS!!!, as mod disabling targets both sides, so server-required mods may get hit by accident), we don't do any extra transforms to ensure proper server support (ie. server-overrides/REMOVALS.txt stays). Cannot be combined with other mode flags.")
 
 	exportCmd.Flags().StringP("to", "T", "", "Renames the output file.")
 
 	exportCmd.MarkFlagsMutuallyExclusive("quick", "dev", "slim", "tweakable", "default")
+	exportCmd.Flags().SortFlags = false
 }

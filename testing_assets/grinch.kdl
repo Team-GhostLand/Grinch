@@ -1,5 +1,17 @@
 format-version 1
 
+default-modpack "Something"
+
 modpacks {
-    modpack "Pack" path="./modpack";
+    modpack "Something" path="./modpack" preferred-name="Pack"; //; == {}
+    modpack "Something else" path="./modpack2" {
+        allow "abc" "xyz"
+        expect "abc" "xyz"
+        disallowed "abc" "xyz"
+    }
+    modpack "Something elseer" path="./modpack3" {
+        allow;
+        expect;
+        disallowed;
+    }
 }

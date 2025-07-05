@@ -67,7 +67,7 @@ func CheckAndAddKnownMrpack(name, path string, wcf WorkspaceConfigFile) (bool, e
 }
 
 func PopulateWorkspaceConfigFile(file os.File) error {
-	_, err := file.WriteString("FMTv1\n# TODO: Have a proper comment here\n")
+	_, err := file.WriteString("FMTv1\n# PLEASE READ THIS COMMENT TO THE VERY END, AS YOU MUST BE VERY CAREFUL WHEN EDITING THIS FILE! This format is VERY particular about line numbers. The line above contains the format version - DO NOT change that. Do not move it, either. FMTv? must be EXACTLY on the 1st line. The line below, ie. the 3rd line (again - don't move them), specifies what modpack are we working on right now. If it has any content, it overrides whatever was set in grinch.kdl - otherwise (if it's blank), it gets ignored and grinch.kdl is followed. Please note, that the line can either be blank or have content, but it nevertheless MUST exist. If the file has less than 3 lines, it fails to parse. Finally, the next lines (4th and beyond) are for storing discovered MRPACKS (ie. those that were either exported, or already imported) - so that you don't need to specify a filename whenever using grinch import. ONE MORE IMPORTANT THING: This file is supposed to stay local to your PC. Do not commit it to any Git repos. It's best to .gitignore it, alongside all *.mrpack files.\n")
 	return err
 }
 

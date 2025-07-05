@@ -27,7 +27,7 @@ func SwapServerGitToDev() error {
 }
 
 func ResolveServerRemovals() error {
-	return errors.New("default export mode not yet implemented, please use --quick for now") //TODO
+	return errors.New("default export mode not yet implemented, please use --quick for now (and - if needed - create a server-pack out of it using the make_serverpack.sh script available on our GitHub)") //TODO
 }
 
 func DoExportJsonTransforms(em ExportMode) error {
