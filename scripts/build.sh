@@ -8,4 +8,5 @@ GOOS=windows go build -o "./bin/grinch.exe";
 GOOS=windows GOARCH=arm go build -o "./bin/grinch-arm.exe"; #No need to specify arm64; Windows ARM is implicitly 64bit
 GOOS=darwin GOARCH=arm64 go build -o "./bin/grinch-mac";
 GOARCH=arm64 go build -o "./bin/grinch-arm";
-zip -9jq "bin/linux.zip" "bin/grinch" "bin/grinch-arm";
+GOARCH=riscv64 go build -o "./bin/grinch-r5";
+zip -9jq "bin/linux.zip" "bin/grinch" "bin/grinch-arm" "bin/grinch-r5";

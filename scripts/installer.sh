@@ -37,7 +37,7 @@ if [ "$1" = "install" ]; then
     
     echo "Downloading Linux binaries...";
     mkdir -p "./bin/";
-    wget 'https://github.com/Team-GhostLand/Grinch/releases/download/mvp-1/linux.zip'
+    wget 'https://github.com/Team-GhostLand/Grinch/releases/download/mvp-1rv/linux.zip'
     if [ $? -ne 0 ]; then
         echo "Download failed!"
         exit 1;
@@ -60,14 +60,25 @@ if [ "$1" = "install" ]; then
         BINNAME="grinch-arm"
     fi
     echo "Archname: $UNAME  -  will use bin: $BINNAME"
-
+    
+    echo "Removing trash..."
+    rm -v "./bin/bin.zip";
+    rm -rv "./cmd/";
+    rm -rv "./testing_assets/";
+    rm -rv "./trans/";
+    rm -rv "./util/";
+    rm -v "./.gitignore";
+    rm -v "./go.mod";
+    rm -v "./go.sum";
+    rm -v "./main.go";
+    
     echo "Linking binaries and scripts...";
     chmod 755 --verbose "$(pwd)/bin/$BINNAME";
     ln --symbolic --verbose "$(pwd)/bin/$BINNAME" "$INSTALL_PATH";
     ln --symbolic --verbose "$(pwd)/scripts/installer.sh" "$INSTALL_PATH-manager";
     ln --symbolic --verbose "$(pwd)/scripts/make_serverpack.sh" "$INSTALL_PATH-serverpack";
     
-    echo "Installed!"
+    echo "Installed!!!  🎉"
     exit 0;
 fi
 
@@ -83,7 +94,7 @@ if [ "$1" = "uninstall" ]; then
     unlink "$INSTALL_PATH-serverpack";
     unlink "$INSTALL_PATH-manager";
 
-    echo "Removing the Spectre project altogether...";
+    echo "Removing this Spectre project altogether...";
     PROJECT_LOCATION=$(pwd)
     cd ..
     rm -rv "$PROJECT_LOCATION"
@@ -92,19 +103,32 @@ fi
 
 
 if [ "$1" = "update" ]; then
-    #if [ "$EUID" -ne 0 ]; then
-    #    echo "$SUDO_NOTE";
-    #    exit 1;
-    #fi
+    if [ "$EUID" -ne 0 ]; then
+        echo "$SUDO_NOTE";
+        exit 1;
+    fi
     
-    echo "Updates don't work yet! Please do \`$ $INSTALL_PATH-manager uninstall\` and then install Grinch's newest version from GitHub.";
-    exit 1;
+    echo "  ---- UNINSTALLING ----";
+    ./scripts/installer.sh uninstall;
+    if [ $? -ne 0 ]; then
+        echo "Uninstall failed!"
+        exit 1;
+    fi
+    
+    echo "  ---- CALLING UPON SPECTRE TO INSTALL THE NEWEST VERSION ----";
+    if [ -z "$PROJECT_NAME" ]; then
+        PROJECT_NAME="grinch"
+    fi
+    sleep 3;
+    export SCRIPT_NAME="scripts/installer" GIT="https://github.com/Team-GhostLand/Grinch.git" && curl -fsSL https://raw.githubusercontent.com/Team-GhostLand/Spectre/master/universal-installer-scaffolding.sh | sudo -E bash
+    exit;
 fi
 
 
 if [ "$1" = "help" ]; then
-    echo "USAGE: $INSTALL_PATH-manager <help|update|uninstall>"; #install is for Spectre - let's not mention it here
     echo "Manages your $INSTALL_PATH installation.";
+    echo "USAGE: $INSTALL_PATH-manager <help|update|uninstall>"; #install is for Spectre - let's not mention it here
+    echo "Note: When updating, please add Specte's project and path variables, if you don't want to use the defaults, as this script isn't aware of its own project name, so we can't pass it automatically."
     exit 0;
 fi
 
