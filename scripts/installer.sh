@@ -37,7 +37,7 @@ if [ "$1" = "install" ]; then
     
     echo "Downloading Linux binaries...";
     mkdir -p "./bin/";
-    wget 'https://github.com/Team-GhostLand/Grinch/releases/download/mvp-1rv/linux.zip'
+    wget 'https://github.com/Team-GhostLand/Grinch/releases/download/mvp-2/linux.zip'
     if [ $? -ne 0 ]; then
         echo "Download failed!"
         exit 1;

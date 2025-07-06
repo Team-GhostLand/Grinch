@@ -51,15 +51,6 @@ var importCmd = &cobra.Command{
 			log.Println("WARN: Found an mrpack to import (" + mrpack_path + "), but couldn't mark it as known - it may get accidentially picked up by another grinch import in the future")
 		}
 
-		//--BACKUP OLD PROJECT--
-		_, err = util.IsSafelyCreateable(util.Tempdir)
-		util.Hndl(err, "Cannot safely backup your previous "+folder_path+" as .old", true)
-
-		err = os.Rename(folder_path, util.Backup)
-		util.Hndl(err, "Couldn't backup your previous "+folder_path+" as .old", true)
-
-		defer os.RemoveAll(util.Backup) //Defer won't run if the app crashed via a util.Hndl call, therefore it's safe to blindly defer the removal of backups, without checking whether said backups might actually come in handy.
-
 		//--UNZIP--
 		_, err = util.IsSafelyCreateable(util.Tempdir)
 		util.Hndl(err, "Cannot safely create a .temp directory", false)
@@ -67,16 +58,32 @@ var importCmd = &cobra.Command{
 		err = util.Unzip(mrpack_path, util.Tempdir)
 		util.Hndl(err, "Cannot unzip "+mrpack_path+" to "+util.Tempdir, true) //Although there is no need to cleanup if unzip fails COMPLETELY, it might also fail partially (and leave a half-full .temp folder behind) - hence the true here
 
-		//--THE ACTUAL IMPORT PROCEDURE--
+		//--TRANSFORMS; CONSTRAINTS--
+		file_transform_error := "Couldn't execute the JSON transforms necessary for import" //JSON STUFF:
 		mi, err := util.GetMrIndexJson(util.MrIndexFileLocation)
-		util.Hndl(err, "Couldn't execute the JSON transforms necessary for import", true)
-		util.DoPrefixSideSupportJsonTransforms(&mi, trans.ImportTransformPredicates, "GR_")
-		err = util.SetMrIndexJson(mi, util.MrIndexFileLocation)
-		util.Hndl(err, "Couldn't execute the JSON transforms necessary for import", true)
+		util.Hndl(err, file_transform_error, true)
 
-		err = trans.SwapServerDevToGit()
+		util.DoPrefixSideSupportJsonTransforms(&mi, trans.ImportTransformPredicates, "GR_")
+		err = trans.SolveJsonImportConstraints(&mi, mp.Constr)
+		util.Hndl(err, file_transform_error, true)
+
+		err = util.SetMrIndexJson(mi, util.MrIndexFileLocation)
+		util.Hndl(err, file_transform_error, true)
+
+		err = trans.SwapServerDevToGit() //FILE STUFF:
 		util.Hndl(err, "Couldn't execute the file transforms necessary for import", true)
-		//TODO: Constraints
+
+		err = trans.SolveFileImportConstraints(mp.Constr.Filters)
+		util.Hndl(err, "Failure while solving file constraints", true)
+
+		//--BACKUP OLD PROJECT AND REPLACE IT WITH NEW ONE--
+		_, err = util.IsSafelyCreateable(util.Backup)
+		util.Hndl(err, "Cannot safely backup your previous "+folder_path+" as .old", true)
+
+		err = os.Rename(folder_path, util.Backup)
+		util.Hndl(err, "Couldn't backup your previous "+folder_path+" as .old", true)
+
+		defer os.RemoveAll(util.Backup) //Defer won't run if the app crashed via a util.Hndl call, therefore it's safe to blindly defer the removal of backups, without checking whether said backups might actually come in handy.
 
 		err = os.Rename(util.Tempdir, folder_path)
 		util.Hndl(err, "Couldn't turn "+util.Tempdir+" into "+folder_path+", but otheriwise completed the import - please rename it manually", false)

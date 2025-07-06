@@ -1,17 +1,30 @@
-format-version 1
+format-version 2
 
 default-modpack "Something"
 
+ //; == {} == <nothing>
+
 modpacks {
-    modpack "Something" path="./modpack" preferred-name="Pack"; //; == {}
+    modpack "Something" path="./modpack" preferred-name="Pack" {
+        version-prefix "1."
+        description "wiwiwiwiwi"
+        ingame-name "IT2"
+        files {
+            //allow "abc" "xyz"
+            //expect "abc" "xyz"
+            //disallowed "abc" "xyz"
+        }
+    };
     modpack "Something else" path="./modpack2" {
-        allow "abc" "xyz"
-        expect "abc" "xyz"
-        disallowed "abc" "xyz"
+        files {
+            allow "abc" "xyz"
+            expect "abc" "xyz"
+            disallowed "abc" "xyz"
+        }
     }
     modpack "Something elseer" path="./modpack3" {
-        allow;
-        expect;
-        disallowed;
+        //allow;
+        //expect;
+        //disallowed;
     }
 }

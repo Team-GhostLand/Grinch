@@ -2,6 +2,7 @@ package util
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -17,13 +18,20 @@ type ProjectConfigFile struct {
 }
 
 type ModpackDefinition struct {
-	Name    string    `kdl:",arg"`
-	Path    string    `kdl:"path"`
-	NameOut string    `kdl:"preferred-name"`
-	Filters FilterSet `kdl:",children"`
+	Name    string             `kdl:",arg"`
+	Path    string             `kdl:"path"`
+	NameOut string             `kdl:"preferred-name"`
+	Constr  PackDefConstraints `kdl:",children"`
 }
 
-type FilterSet struct {
+type PackDefConstraints struct {
+	Filters     PackDefConstrFilterSet `kdl:"files"`
+	Version     string                 `kdl:"version-prefix"`
+	Description string                 `kdl:"description"`
+	Name        string                 `kdl:"ingame-name"`
+}
+
+type PackDefConstrFilterSet struct {
 	Allow      []string `kdl:"allow"`
 	Expect     []string `kdl:"expect"`
 	Disallowed []string `kdl:"disallowed"`
@@ -38,6 +46,9 @@ func LoadProjectConfig(path string) (ProjectConfigFile, error) {
 	err = kdl.Unmarshal([]byte(data), &pcf)
 	if err != nil {
 		return pcf, err
+	}
+	if pcf.Version != 2 {
+		return pcf, errors.New("this version of grinch uses config version 2, but your config is written in version " + fmt.Sprint())
 	}
 	if len(pcf.MPs.MP) == 0 {
 		return pcf, errors.New("there aren't any modpacks defined in your config file")
