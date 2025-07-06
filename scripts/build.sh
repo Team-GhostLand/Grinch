@@ -10,3 +10,4 @@ GOOS=darwin GOARCH=arm64 go build -o "./bin/grinch-mac";
 GOARCH=arm64 go build -o "./bin/grinch-arm";
 GOARCH=riscv64 go build -o "./bin/grinch-r5";
 zip -9jq "bin/linux.zip" "bin/grinch" "bin/grinch-arm" "bin/grinch-r5";
+ln -rs ./scripts/make_serverpack.sh ./bin/make_serverpack.sh
