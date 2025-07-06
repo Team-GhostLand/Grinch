@@ -1,10 +1,12 @@
 package trans
 
 import (
+	"cmp"
 	"errors"
 	"io/fs"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/Team-GhostLand/Grinch/util"
@@ -53,4 +55,11 @@ func SolveFileImportConstraints(fset util.PackDefConstrFilterSet) error {
 	}
 
 	return errors.New("not yet implemented") //TODO
+}
+
+func SortMrIndexOnImport(mi *util.MrIndex) {
+	slices.SortFunc(mi.Mods,
+		func(a, b util.MrIndexModInstance) int {
+			return cmp.Compare(a.Path, b.Path)
+		})
 }
