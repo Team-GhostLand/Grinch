@@ -14,7 +14,7 @@ var rootCmd = &cobra.Command{
 	Short: "Grinch: Git x Modrinth",
 	Long: `~ Grinch: Git x Modrinth ~
 
-Version: MVP-1
+Version: MVP-3
 Docs: On GitHub
 
 by Team GhostLand`,
