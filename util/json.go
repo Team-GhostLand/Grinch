@@ -54,7 +54,7 @@ func SetMrIndexJson(mi MrIndex, path string) error {
 		return err
 	}
 
-	return os.WriteFile(filepath.FromSlash(path), data, ReasonablePerms)
+	return os.WriteFile(filepath.FromSlash(path), data, ReasonableFilePerms)
 }
 
 func DoClientsideSupportJsonTransforms(mi *MrIndex, from, to MrIndexModSideSupport, disable bool) {

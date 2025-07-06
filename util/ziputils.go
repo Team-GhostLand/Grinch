@@ -87,10 +87,10 @@ func Unzip(src, dest string) error {
 		}
 
 		if f.FileInfo().IsDir() {
-			os.MkdirAll(path, ReasonablePerms)
+			os.MkdirAll(path, ReasonableDirPerms)
 		} else {
-			os.MkdirAll(filepath.Dir(path), ReasonablePerms)
-			f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, ReasonablePerms)
+			os.MkdirAll(filepath.Dir(path), ReasonableDirPerms)
+			f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, ReasonableFilePerms)
 			if err != nil {
 				return err
 			}
