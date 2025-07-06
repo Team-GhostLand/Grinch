@@ -15,7 +15,7 @@ const (
 	MrIndexFileLocation     = Tempdir + "/modrinth.index.json"
 	GrWorkspaceFileLocation = ".gr-workspace"
 	GrProjectFileLocation   = "grinch.kdl"
-	ReasonablePerms         = 0755
+	ReasonablePerms         = 0644
 )
 
 func Hndl(err error, with string, cleanup bool) {
