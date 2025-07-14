@@ -63,7 +63,8 @@ var importCmd = &cobra.Command{
 		mi, err := util.GetMrIndexJson(util.MrIndexFileLocation)
 		util.Hndl(err, file_transform_error, true)
 
-		util.DoPrefixSideSupportJsonTransforms(&mi, trans.ImportTransformPredicates, "GR_")
+		util.DoPrefixSideSupportJsonTransforms(&mi, trans.ImportTransformPredicates, "GR_", false)
+		util.DoPrefixSideSupportJsonTransforms(&mi, trans.ImportTransformPredicates, "GRd_", true)
 		err = trans.SolveJsonImportConstraints(&mi, mp.Constr)
 		util.Hndl(err, file_transform_error, true)
 		trans.SortMrIndexOnImport(&mi)

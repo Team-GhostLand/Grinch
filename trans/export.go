@@ -42,7 +42,7 @@ func DoExportJsonTransforms(em ExportMode) error {
 
 	switch em {
 	case EmDev:
-		util.DoClientsideSupportJsonTransforms(&mi, util.MssUnsupported, util.MssRequired, false)
+		util.DoClientsideSupportJsonTransforms(&mi, util.MssUnsupported, util.MssRequired, true)
 	case EmSlim:
 		util.DoClientsideSupportJsonTransforms(&mi, util.MssOptional, util.MssUnsupported, false)
 	case EmTweakable:

@@ -15,6 +15,7 @@ const (
 	MrIndexFileLocation     = Tempdir + "/modrinth.index.json"
 	GrWorkspaceFileLocation = ".gr-workspace"
 	GrProjectFileLocation   = "grinch.kdl"
+	DisabledExtension       = "disabled"
 	ReasonableFilePerms     = 0644
 	ReasonableDirPerms      = 0755
 )

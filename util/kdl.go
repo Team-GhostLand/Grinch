@@ -47,8 +47,8 @@ func LoadProjectConfig(path string) (ProjectConfigFile, error) {
 	if err != nil {
 		return pcf, err
 	}
-	if pcf.Version != 2 {
-		return pcf, errors.New("this version of grinch uses config version 2, but your config is written in version " + fmt.Sprint(pcf.Version))
+	if pcf.Version != 3 {
+		return pcf, errors.New("this version of grinch uses config version 3, but yours is written in version " + fmt.Sprint(pcf.Version))
 	}
 	if len(pcf.MPs.MP) == 0 {
 		return pcf, errors.New("there aren't any modpacks defined in your config file")

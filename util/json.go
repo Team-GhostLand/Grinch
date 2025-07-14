@@ -62,7 +62,7 @@ func DoClientsideSupportJsonTransforms(mi *MrIndex, from, to MrIndexModSideSuppo
 		if m.Side.Client == from {
 			mi.Mods[i].Side.Client = to
 			if disable {
-				mi.Mods[i].Path = EnsureExtension(m.Path, "disabled")
+				mi.Mods[i].Path = EnsureExtension(m.Path, DisabledExtension)
 			}
 		}
 	}
@@ -73,21 +73,30 @@ func DoServersideSupportJsonTransforms(mi *MrIndex, from, to MrIndexModSideSuppo
 		if m.Side.Server == from {
 			mi.Mods[i].Side.Server = to
 			if disable {
-				mi.Mods[i].Path = EnsureExtension(m.Path, "disabled")
+				mi.Mods[i].Path = EnsureExtension(m.Path, DisabledExtension)
 			}
 		}
 	}
 }
 
-func DoPrefixSideSupportJsonTransforms(mi *MrIndex, predicates map[string]MrIndexModSideSupportPair, p string) {
+func DoPrefixSideSupportJsonTransforms(mi *MrIndex, predicates map[string]MrIndexModSideSupportPair, pfx string, disable bool) {
 	for i, m := range mi.Mods {
-		if strings.HasPrefix(IsolateEndPathElement(m.Path), p) {
-			for p, s := range predicates {
-				if strings.HasPrefix(IsolateEndPathElement(m.Path), p) {
+		if strings.HasPrefix(IsolateEndPathElement(m.Path), pfx) { //Step 1: Find a mod that has Grinch's prefix
+
+			for prd, s := range predicates { //Setp 2: If its prefix is one of those „transform supported sides” ones - do said side transforms
+				if strings.HasPrefix(IsolateEndPathElement(m.Path), (pfx + prd)) {
 					mi.Mods[i].Side = s
 					break
 				}
 			}
+
+			if disable { //Step 3: Mark as either enabled or disabled, depending on what was passed in
+				mi.Mods[i].Path = EnsureExtension(m.Path, DisabledExtension)
+			} else {
+				mi.Mods[i].Path = strings.TrimSuffix(m.Path, ("." + DisabledExtension))
+			}
 		}
 	}
 }
+
+//TODO: Make disable bool's behaviour consistent across all funcs above (right now, the upper 2 leave disabled status alone if disable==false, while the lower will make it enabled in such case). Instead, make an enum to hold all 3 possible options ("leave alone", "disable", "enable")
