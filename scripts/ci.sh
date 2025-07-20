@@ -16,7 +16,7 @@ echo "Grinch's help outupt:";
 echo "...and Git's:";
 git help
 echo "......and make_serverpacks's (should complain about a missing name):";
-/app/make_serverpack.sh
+/app/grinch-serverpack
 echo "Test completed. This command will soon exit and (depending on your setup) might be restarted by Docker.";
 sleep 5;
 exit 0;

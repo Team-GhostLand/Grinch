@@ -11,5 +11,6 @@ COPY --from=builder /bin/grinch /app
 COPY ./scripts/ci.sh /app
 COPY ./scripts/make_serverpack.sh /app
 RUN ["chmod", "-R", "777", "."]
+RUN ["mv", "make_serverpack.sh", "grinch-serverpack"]
 
 ENTRYPOINT ["/app/ci.sh"]
