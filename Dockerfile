@@ -7,6 +7,7 @@ RUN ["/bin/grinch"]
 FROM alpine/git
 WORKDIR /app
 RUN ["apk", "add", "bash"]
+RUN ["apk", "add", "libc6-compat"]
 COPY --from=builder /bin/grinch /app
 RUN ["/app/grinch"]
 COPY ./scripts/ci.sh /app
