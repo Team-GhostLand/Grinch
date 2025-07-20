@@ -6,7 +6,7 @@ COPY ./go.mod /src/Team-GhostLand/Grinch
 COPY ./cmd/ /src/Team-GhostLand/Grinch/cmd
 COPY ./trans/ /src/Team-GhostLand/Grinch/trans
 COPY ./util/ /src/Team-GhostLand/Grinch/util
-COPY ./.git/ /src/Team-GhostLand/Grinch/.git
+# COPY ./.git/ /src/Team-GhostLand/Grinch/.git
 RUN ["pwd"]
 RUN ["ls", "-al"]
 RUN ["go", "build", "-o", "/bin/grinch"]
