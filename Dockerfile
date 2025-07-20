@@ -1,11 +1,12 @@
-FROM golang:1.24 as builder
-WORKDIR /src
-COPY ./main.go /src
-COPY ./go.sum /src
-COPY ./go.mod /src
-COPY ./cmd/ /src
-COPY ./trans/ /src
-COPY ./util/ /src
+FROM golang:1.24 AS builder
+WORKDIR /src/Team-GhostLand/Grinch/Team-GhostLand/Grinch
+COPY ./main.go /src/Team-GhostLand/Grinch
+COPY ./go.sum /src/Team-GhostLand/Grinch
+COPY ./go.mod /src/Team-GhostLand/Grinch
+COPY ./cmd/ /src/Team-GhostLand/Grinch
+COPY ./trans/ /src/Team-GhostLand/Grinch
+COPY ./util/ /src/Team-GhostLand/Grinch
+COPY .git/ /src/Team-GhostLand/Grinch
 RUN ["go", "build", "-o", "/bin/grinch"]
 
 FROM alpine/git
