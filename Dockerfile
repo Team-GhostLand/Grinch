@@ -10,4 +10,4 @@ COPY ./scripts/ci.sh /app
 COPY ./scripts/make_serverpack.sh /app
 RUN ["chmod", "-R", "777", "."]
 
-ENTRYPOINT ["/app/ci.sh"]
+ENTRYPOINT ["/app/grinch"]
