@@ -2,13 +2,15 @@
 
 # THIS IS SUPPOSED TO ONLY BE RUN FROM A DOCKER IMAGE!
 
-echo "STARTED ON: $(date)";
+echo "-----------STARTED ON: $(date)-----------";
 echo "This is ATM just a simple test whether Docker works!!!";
 if [ -z "$REPO" ]; then
     echo "ERROR: You must specify a \$REPO envar!";
     exit 1
 fi
 echo "Uses repo: $REPO";
+echo "Running from: $(pwd) - with contents:";
+ls -al;
 echo "Grinch's help outupt:";
 ./grinch
 echo "...and Git's:";
