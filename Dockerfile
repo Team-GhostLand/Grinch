@@ -8,6 +8,6 @@ WORKDIR /app
 COPY --from=builder /bin/grinch /app
 COPY ./scripts/ci.sh /app
 COPY ./scripts/make_serverpack.sh /app
-RUN ["chmod", "--recursive", "777", "."]
+RUN ["chmod", "-R", "777", "."]
 
 ENTRYPOINT ["/app/ci.sh"]
