@@ -1,5 +1,5 @@
 FROM golang:1.24 AS builder
-WORKDIR /src/Team-GhostLand/Grinch/Team-GhostLand/Grinch
+WORKDIR /src/Team-GhostLand/Grinch/
 COPY ./main.go /src/Team-GhostLand/Grinch
 COPY ./go.sum /src/Team-GhostLand/Grinch
 COPY ./go.mod /src/Team-GhostLand/Grinch
