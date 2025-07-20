@@ -22,11 +22,10 @@ else
     echo "...which has to be cloned.";
     git clone "$REPO" "cache" || exit
     echo "[STARTING FROM SCRATCH]" >> "last-version.txt"
+    cd "cache" || exit
 fi
 
-cd "cache" || exit
-
-if [ "$(/app/grinch vq)" = "$(cat last-version.txt)" ]; then
+if [ "$(/app/grinch vq)" = "$(cat ../last-version.txt)" ]; then
     echo "You seem to be using an up-to date modpack. Waiting for 15s until the next cycle.";
     sleep 15
     exec "/app/ci.sh";
