@@ -6,7 +6,7 @@ COPY ./go.mod /src/Team-GhostLand/Grinch
 COPY ./cmd/ /src/Team-GhostLand/Grinch
 COPY ./trans/ /src/Team-GhostLand/Grinch
 COPY ./util/ /src/Team-GhostLand/Grinch
-COPY .git/ /src/Team-GhostLand/Grinch
+COPY ./.git/ /src/Team-GhostLand/Grinch
 RUN ["go", "build", "-o", "/bin/grinch"]
 
 FROM alpine/git
