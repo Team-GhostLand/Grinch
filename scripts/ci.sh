@@ -37,7 +37,7 @@ if [ "$VER" = "$(cat ../last-version.txt)" ]; then
     exit 1;
 fi
 
-echo "Building modpack version $VER (because it's different than $(cat ../last-version.txt))";
+echo "Building modpack version $VER";
 MRP=".mrpack"
 Q="quick$MRP"
 S="slim$MRP"
@@ -55,7 +55,7 @@ mv "$S" "$EXPORTNAME - Slim Edition$MRP" || exit
 mv "$T" "$EXPORTNAME - Tweakable Edition$MRP" || exit
 mv "serverpack-$Q" "$SERVERPACK" || exit
 mv ./*.mrpack "/exports" || exit
-echo "$VER" >> "last-version.txt"
+echo "$VER" >> "../last-version.txt"
 
 UPDATE_TARGET="latest_server.mrpack"
 echo "Updating $UPDATE_TARGET";
