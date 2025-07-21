@@ -2,7 +2,8 @@
 
 # THIS IS SUPPOSED TO ONLY BE RUN FROM A DOCKER IMAGE!
 
-echo "-----------STARTED ON: $(date)-----------";
+echo "
+-----------STARTED ON: $(date)-----------";
 
 if [ -z "$REPO" ]; then
     echo "ERROR: You must specify a \$REPO envar!";
