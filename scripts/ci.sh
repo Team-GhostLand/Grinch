@@ -25,7 +25,9 @@ else
     cd "cache" || exit
 fi
 
-if [ "$(/app/grinch vq)" = "$(cat ../last-version.txt)" ]; then
+VER="$(/app/grinch vq)"
+
+if [ "$VER" = "$(cat ../last-version.txt)" ]; then
     echo "You seem to be using an up-to date modpack. Waiting for 15s until the next cycle.";
     sleep 15
     exec "/app/ci.sh";
@@ -33,8 +35,7 @@ if [ "$(/app/grinch vq)" = "$(cat ../last-version.txt)" ]; then
     exit 1;
 fi
 
-echo "Building modpack version $(/app/grinch vq)";
-
+echo "Building modpack version $VER";
 MRP=".mrpack"
 Q="quick$MRP"
 S="slim$MRP"
@@ -52,6 +53,7 @@ mv "$S" "$EXPORTNAME - Slim Edition$MRP" || exit
 mv "$T" "$EXPORTNAME - Tweakable Edition$MRP" || exit
 mv "serverpack-$Q" "$SERVERPACK" || exit
 mv ./*.mrpack "/exports" || exit
+echo "$VER" >> "last-version.txt"
 
 UPDATE_TARGET="latest_server.mrpack"
 echo "Updating $UPDATE_TARGET";
