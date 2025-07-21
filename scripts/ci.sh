@@ -18,8 +18,6 @@ echo "Using repo: $REPO";
 if [ -e "cache" ]; then
     echo "...which is already cached - will do a simple git pull to check for updates instead of a full git clone.";
     cd "cache" || exit
-    git config --global --add safe.directory "/exports/cache" || exit
-    git reset --hard HEAD || exit
     git pull || exit
 else
     echo "...which has to be cloned.";
@@ -33,6 +31,7 @@ VER="$(/app/grinch vq)"
 if [ "$VER" = "$(cat ../last-version.txt)" ]; then
     echo "You seem to be using an up-to date modpack. Waiting for 15s until the next cycle.";
     sleep 15
+    cd "/workdir" || exit
     exec "/app/ci.sh";
     echo "ERROR: If you're seeing this, the next cycle couldn't be started!";
     exit 1;
@@ -69,6 +68,7 @@ cp "$SERVERPACK" "$UPDATE_TARGET" || exit
 
 echo "DONE! Waiting for 2min until the next cycle.";
 sleep 120
+cd "/workdir" || exit
 exec "/app/ci.sh";
 echo "ERROR: If you're seeing this, the next cycle couldn't be started!";
 exit 1;
