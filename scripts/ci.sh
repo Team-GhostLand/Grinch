@@ -18,7 +18,8 @@ echo "Using repo: $REPO";
 if [ -e "cache" ]; then
     echo "...which is already cached - will do a simple git pull to check for updates instead of a full git clone.";
     cd "cache" || exit
-    git config --global --add safe.directory "/exports/cache";
+    git config --global --add safe.directory "/exports/cache" || exit
+    git reset --hard HEAD || exit
     git pull || exit
 else
     echo "...which has to be cloned.";
