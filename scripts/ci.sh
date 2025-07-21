@@ -22,7 +22,7 @@ if [ -e "cache" ]; then
 else
     echo "...which has to be cloned.";
     git clone "$REPO" "cache" || exit
-    echo "[STARTING FROM SCRATCH]" >> "last-version.txt"
+    echo "[STARTING FROM SCRATCH]" > "last-version.txt"
     cd "cache" || exit
 fi
 
@@ -55,7 +55,7 @@ mv "$S" "$EXPORTNAME - Slim Edition$MRP" || exit
 mv "$T" "$EXPORTNAME - Tweakable Edition$MRP" || exit
 mv "serverpack-$Q" "$SERVERPACK" || exit
 mv ./*.mrpack "/exports" || exit
-echo "$VER" >> "../last-version.txt"
+echo "$VER" > "../last-version.txt"
 
 UPDATE_TARGET="latest_server.mrpack"
 echo "Updating $UPDATE_TARGET";
