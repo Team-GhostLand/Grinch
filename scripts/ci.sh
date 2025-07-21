@@ -37,7 +37,7 @@ if [ "$VER" = "$(cat ../last-version.txt)" ]; then
     exit 1;
 fi
 
-echo "Building modpack version $VER";
+echo "Building modpack version $VER (because it's different than $(cat ../last-version.txt))";
 MRP=".mrpack"
 Q="quick$MRP"
 S="slim$MRP"
