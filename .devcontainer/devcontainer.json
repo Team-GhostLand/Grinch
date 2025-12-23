@@ -1,0 +1,7 @@
+{
+	"name": "Devcontainer for shell scripts",
+	"image": "mcr.microsoft.com/devcontainers/base:noble",
+	"features": {
+		"ghcr.io/guziomg/devcontainers/personal:latest": {}
+	}
+}

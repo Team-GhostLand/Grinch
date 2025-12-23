@@ -11,11 +11,14 @@ cd "./.temp/" || exit
 unzip "../$1" || exit
 cd "./overrides/" || exit
 
-IFS=$'\n'
-# shellcheck disable=SC2046
-rm -rv $(cat "../server-overrides/REMOVALS.txt") || exit
-
-rm "../server-overrides/REMOVALS.txt" || exit
+RMINDEX="../server-overrides/REMOVALS.txt"
+if [ -f "$RMINDEX" ]; then
+	IFS=$'\n'
+	# shellcheck disable=SC2046
+	rm -rv $(cat "$RMINDEX") || exit
+	
+	rm "$RMINDEX" || exit
+fi
 cd .. || exit
 
 zip -r "serverpack-$1" ./* || exit
