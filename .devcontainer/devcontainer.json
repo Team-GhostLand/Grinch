@@ -1,7 +1,9 @@
 {
-	"name": "Devcontainer for shell scripts",
+	"name": "Devcontainer for Grinch",
 	"image": "mcr.microsoft.com/devcontainers/base:noble",
 	"features": {
-		"ghcr.io/guziomg/devcontainers/personal:latest": {}
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {}, //For CI Dockefile
+		"ghcr.io/guziomg/devcontainers/personal:latest": {},     //Shellcheck, mostly
+		"ghcr.io/guziomg/devcontainers/go-cli-dev:latest": {}    //core
 	}
 }
