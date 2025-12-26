@@ -13,6 +13,10 @@ if [ -z "$NAME" ]; then
     echo "ERROR: You must specify a \$NAME envar!";
     exit 1
 fi
+if [ -z "$PACK" ]; then
+    echo "ERROR: You must specify a \$PACK envar!";
+    exit 1
+fi
 echo "Using repo: $REPO";
 
 if [ -e "cache" ]; then
@@ -26,7 +30,7 @@ else
     cd "cache" || exit
 fi
 
-VER="$(/app/grinch vq)"
+VER="$(/app/grinch vq "$PACK")"
 
 if [ "$VER" = "$(cat ../last-version.txt)" ]; then
     echo "You seem to be using an up-to date modpack. Waiting for 15s until the next cycle.";
@@ -42,12 +46,12 @@ MRP=".mrpack"
 Q="quick$MRP"
 S="slim$MRP"
 T="tweakable$MRP"
-/app/grinch e -qT "$Q" || exit
-/app/grinch e -sT "$S" || exit
-/app/grinch e -tT "$T" || exit
+/app/grinch e -qT "$Q" "$PACK" || exit
+/app/grinch e -sT "$S" "$PACK" || exit
+/app/grinch e -tT "$T" "$PACK" || exit
 /app/grinch-serverpack "$Q" || exit
 
-EXPORTNAME="$NAME $(/app/grinch vq)";
+EXPORTNAME="$NAME $VER";
 echo "Exporting just-built assets as $EXPORTNAME";
 SERVERPACK="$EXPORTNAME - Server Edition$MRP"
 mv "$Q" "$EXPORTNAME$MRP" || exit
