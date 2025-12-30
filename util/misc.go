@@ -15,6 +15,7 @@ const (
 	NormalOvrrDir           = Tempdir + "/overrides"
 	DevServerOvrrDir        = NormalOvrrDir + "/.SERVERSIDE"
 	MrIndexFileLocation     = Tempdir + "/modrinth.index.json"
+	RemovalsFileLocation    = ServerOvrrDir + "/REMOVALS.txt"
 	GrWorkspaceFileLocation = ".gr-workspace"
 	GrProjectFileLocation   = "grinch.kdl"
 	DisabledExtension       = "disabled"
