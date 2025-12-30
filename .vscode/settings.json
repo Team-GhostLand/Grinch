@@ -9,6 +9,7 @@
 		"envar",
 		"EXPORTNAME",
 		"fname",
+		"fset",
 		"GOARCH",
 		"gopkg",
 		"Hndl",
