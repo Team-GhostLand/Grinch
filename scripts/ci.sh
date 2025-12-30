@@ -30,7 +30,7 @@ else
     cd "cache" || exit
 fi
 
-VER="$(/app/grinch vq "$PACK")"
+VER="$(/app/grinch query version "$PACK")"
 
 if [ "$VER" = "$(cat ../last-version.txt)" ]; then
     echo "You seem to be using an up-to date modpack. Waiting for 15s until the next cycle.";
