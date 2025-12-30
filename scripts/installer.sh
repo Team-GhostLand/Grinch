@@ -59,7 +59,7 @@ if [ "$1" = "install" ]; then
     if [ "$UNAME" != "x86_64" ]; then
         BINNAME="grinch-arm"
     fi
-    echo "Archname: $UNAME  -  will use bin: $BINNAME"
+    echo "Arch-name: $UNAME  -  will use bin: $BINNAME"
     
     echo "Removing trash..."
     rm -v "./bin/bin.zip";
@@ -114,7 +114,7 @@ if [ "$1" = "update" ]; then
         echo "Uninstall failed!"
         exit 1;
     fi
-    cd .. #CDs don't carry over between shell excutions - we need to once again exit from the (now-deleted) project folder into Specre's main dir, or sudo -E bash will complain about starting from a non-existent directory.
+    cd .. #CDs don't carry over between shell executions - we need to once again exit from the (now-deleted) project folder into Spectre's main dir, or sudo -E bash will complain about starting from a non-existent directory.
     
     echo "  ---- CALLING UPON SPECTRE TO INSTALL THE NEWEST VERSION ----";
     if [ -z "$PROJECT_NAME" ]; then
@@ -129,7 +129,7 @@ fi
 if [ "$1" = "help" ]; then
     echo "Manages your $INSTALL_PATH installation.";
     echo "USAGE: $INSTALL_PATH-manager <help|update|uninstall>"; #install is for Spectre - let's not mention it here
-    echo "Note: When updating, please add Specte's project and path variables, if you don't want to use the defaults, as this script isn't aware of its own project name, so we can't pass it automatically."
+    echo "Note: When updating, please add Spectre's project and path variables, if you don't want to use the defaults, as this script isn't aware of its own project name, so we can't pass it automatically."
     exit 0;
 fi
 

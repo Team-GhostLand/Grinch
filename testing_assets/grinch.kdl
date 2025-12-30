@@ -7,7 +7,7 @@ default-modpack "Something"
 modpacks {
     modpack "Something" path="./modpack" preferred-name="Pack" {
         version-prefix "1."
-        description "wiwiwiwiwi"
+        description "wi wi wi wi wi"
         ingame-name "IT2"
         files {
             //allow "abc" "xyz"
@@ -22,7 +22,7 @@ modpacks {
             disallowed "abc" "xyz"
         }
     }
-    modpack "Something elseer" path="./modpack3" {
+    modpack "Something else-er" path="./modpack3" {
         //allow;
         //expect;
         //disallowed;

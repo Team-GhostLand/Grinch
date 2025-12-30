@@ -29,17 +29,17 @@ func Hndl(err error, with string, cleanup bool) {
 	}
 }
 
-func IsSafelyCreateable(path string) (bool, error) {
+func IsSafelyCreatable(path string) (bool, error) {
 	_, err := os.Stat(path)
 
 	if err != nil {
 		if errors.Is(err, fs.ErrNotExist) { //If we got a NotExists error - great! There's nothing. Can safely write.
 			return true, nil
 		}
-		return false, err //...otherwise, either the direcotry/file DOES EXIST (but couldn't be Stat'd for some reason) or doesn't (but then likely wouldn't be safely createable, either - eg. because we have no permissions or the filesystem failed)
+		return false, err //...otherwise, either the directory/file DOES EXIST (but couldn't be Stat'd for some reason) or doesn't (but then likely wouldn't be safely creatable, either - eg. because we have no permissions or the filesystem failed)
 	}
 
-	//If the error wasn't NIL, then Stat was succesful - ie. the direcotry/file must, logically, exist
+	//If the error wasn't NIL, then Stat was successful - ie. the directory/file must, logically, exist
 	return false, fs.ErrExist
 
 }

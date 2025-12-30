@@ -98,7 +98,7 @@ func FindNewMrpack(cmd_args []string, dir_path, wcf_path string, wcf WorkspaceCo
 		}
 		known, err := CheckAndAddKnownMrpack(f.Name(), wcf_path, wcf)
 		if !known {
-			return f.Name(), err //Even if err != nil, the search was sucesful, so we should always check for that first (and optionally warn that appending failed, if err != nil)
+			return f.Name(), err //Even if err != nil, the search was successful, so we should always check for that first (and optionally warn that appending failed, if err != nil)
 		}
 	}
 

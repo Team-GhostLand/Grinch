@@ -83,7 +83,7 @@ func DoPrefixSideSupportJsonTransforms(mi *MrIndex, predicates map[string]MrInde
 	for i, m := range mi.Mods {
 		if strings.HasPrefix(IsolateEndPathElement(m.Path), pfx) { //Step 1: Find a mod that has Grinch's prefix
 
-			for prd, s := range predicates { //Setp 2: If its prefix is one of those „transform supported sides” ones - do said side transforms
+			for prd, s := range predicates { //Step 2: If its prefix is one of those „transform supported sides” ones - do said side transforms
 				if strings.HasPrefix(IsolateEndPathElement(m.Path), (pfx + prd)) {
 					mi.Mods[i].Side = s
 					break
@@ -99,4 +99,4 @@ func DoPrefixSideSupportJsonTransforms(mi *MrIndex, predicates map[string]MrInde
 	}
 }
 
-//TODO: Make disable bool's behaviour consistent across all funcs above (right now, the upper 2 leave disabled status alone if disable==false, while the lower will make it enabled in such case). Instead, make an enum to hold all 3 possible options ("leave alone", "disable", "enable")
+//TODO: Make disable bool's behavior consistent across all funcs above (right now, the upper 2 leave disabled status alone if disable==false, while the lower will make it enabled in such case). Instead, make an enum to hold all 3 possible options ("leave alone", "disable", "enable")

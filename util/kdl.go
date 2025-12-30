@@ -62,7 +62,7 @@ func SelectModpack(pcf ProjectConfigFile, wcf WorkspaceConfigFile) (*ModpackDefi
 		return nil, errors.New("you don't have any modpacks selected in neither workspace nor project settings, but you have more than one defined, so we cannot auto-select")
 	} else if wcf[2] == "" && pcf.Default == "" && len(pcf.MPs.MP) == 1 {
 		return &pcf.MPs.MP[0], nil
-	} else if wcf[2] != "" { //We don't care whether default-modpack is set, since workspace takes precednece
+	} else if wcf[2] != "" { //We don't care whether default-modpack is set, since workspace takes precedence
 		return FindModpackByName(pcf, wcf[2])
 	} else if wcf[2] == "" && pcf.Default != "" {
 		return FindModpackByName(pcf, pcf.Default)

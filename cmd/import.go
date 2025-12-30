@@ -48,11 +48,11 @@ var importCmd = &cobra.Command{
 			util.Hndl(err, "Couldn't find any mrpack to operate on", false)
 		}
 		if err != nil {
-			log.Println("WARN: Found an mrpack to import (" + mrpack_path + "), but couldn't mark it as known - it may get accidentially picked up by another grinch import in the future")
+			log.Println("WARN: Found an mrpack to import (" + mrpack_path + "), but couldn't mark it as known - it may get accidentally picked up by another grinch import in the future")
 		}
 
 		//--UNZIP--
-		_, err = util.IsSafelyCreateable(util.Tempdir)
+		_, err = util.IsSafelyCreatable(util.Tempdir)
 		util.Hndl(err, "Cannot safely create a .temp directory", false)
 
 		err = util.Unzip(mrpack_path, util.Tempdir)
@@ -79,7 +79,7 @@ var importCmd = &cobra.Command{
 		util.Hndl(err, "Failure while solving file constraints", true)
 
 		//--BACKUP OLD PROJECT AND REPLACE IT WITH NEW ONE--
-		_, err = util.IsSafelyCreateable(util.Backup)
+		_, err = util.IsSafelyCreatable(util.Backup)
 		util.Hndl(err, "Cannot safely backup your previous "+folder_path+" as .old", true)
 
 		err = os.Rename(folder_path, util.Backup)
@@ -88,7 +88,7 @@ var importCmd = &cobra.Command{
 		defer os.RemoveAll(util.Backup) //Defer won't run if the app crashed via a util.Hndl call, therefore it's safe to blindly defer the removal of backups, without checking whether said backups might actually come in handy.
 
 		err = os.Rename(util.Tempdir, folder_path)
-		util.Hndl(err, "Couldn't turn "+util.Tempdir+" into "+folder_path+", but otheriwise completed the import - please rename it manually", false)
+		util.Hndl(err, "Couldn't turn "+util.Tempdir+" into "+folder_path+", but otherwise completed the import - please rename it manually", false)
 
 	},
 }

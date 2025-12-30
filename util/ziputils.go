@@ -37,7 +37,7 @@ func MakeZipFile(src, dest string) error {
 		// This snippet happens to work because I don't use
 		// absolute paths, but ensure your real-world code
 		// transforms path into a zip-root relative path.
-		f, err := w.Create(StripFirstPathElement(path)) //Modification from stackoverflow anwser - without it, we'd copy names with the „.temp” prefix, which we don't want
+		f, err := w.Create(StripFirstPathElement(path)) //Modification from stackoverflow answer - without it, we'd copy names with the „.temp” prefix, which we don't want
 		if err != nil {
 			return err
 		}
@@ -50,7 +50,7 @@ func MakeZipFile(src, dest string) error {
 		return nil
 	}
 
-	return filepath.Walk(src, walker) //Modification from stackoverflow anwser: No need for a dedicated err != nil check - if it was nil after Walk(), we'll simply return said nil here. Idk if it's idiomatic tho - something tells me it might not be because some smarter than me devs (ie. ppl on Stack) didn't use it. Didn't stup me from using the same patterm in a bunch of other places, tho! (eg. json.go)
+	return filepath.Walk(src, walker) //Modification from stackoverflow answer: No need for a dedicated err != nil check - if it was nil after Walk(), we'll simply return said nil here. Idk if it's idiomatic tho - something tells me it might not be because some smarter than me devs (ie. ppl on Stack) didn't use it. Didn't stup me from using the same pattern in a bunch of other places, tho! (eg. json.go)
 }
 
 func Unzip(src, dest string) error {
