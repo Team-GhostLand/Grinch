@@ -10,9 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var vqCmd = &cobra.Command{
-	Use:   "vq [modpack]",
-	Short: "Version Query - prints selected/default modpack's version",
+var queryCmd = &cobra.Command{
+	Use:   "query [modpack]",
+	Aliases: []string{"q", "qry", "qr", "get", "g"},
+	Short: "Prints some value (*currently, only the version) from the selected/default modpack's definition in grinch.kdl",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		if len(args) > 1 {
@@ -47,5 +48,5 @@ var vqCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(vqCmd)
+	rootCmd.AddCommand(queryCmd)
 }
