@@ -24,10 +24,10 @@ var ImportTransformPredicates = map[string]util.MrIndexModSideSupportPair{
 }
 
 func SwapServerDevToGit() error {
-	if _, err := os.Stat(filepath.FromSlash(util.DevSvOvrrDir)); errors.Is(err, fs.ErrNotExist) {
+	if _, err := os.Stat(filepath.FromSlash(util.DevServerOvrrDir)); errors.Is(err, fs.ErrNotExist) {
 		return nil //Do nothing if there were no server-overrides in the 1st place
 	}
-	return os.Rename(filepath.FromSlash(util.DevSvOvrrDir), filepath.FromSlash(util.GitSvOvrrDir))
+	return os.Rename(filepath.FromSlash(util.DevServerOvrrDir), filepath.FromSlash(util.ServerOvrrDir))
 }
 
 func SolveJsonImportConstraints(mi *util.MrIndex, constr util.PackDefConstraints) error {

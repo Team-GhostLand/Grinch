@@ -10,8 +10,10 @@ import (
 const (
 	Tempdir                 = ".temp"
 	Backup                  = ".old"
-	GitSvOvrrDir            = Tempdir + "/server-overrides"
-	DevSvOvrrDir            = Tempdir + "/overrides/.SERVERSIDE"
+	ServerOvrrDir           = Tempdir + "/server-overrides"
+	ClientOvrrDir           = Tempdir + "/client-overrides"
+	NormalOvrrDir           = Tempdir + "/overrides"
+	DevServerOvrrDir        = NormalOvrrDir + "/.SERVERSIDE"
 	MrIndexFileLocation     = Tempdir + "/modrinth.index.json"
 	GrWorkspaceFileLocation = ".gr-workspace"
 	GrProjectFileLocation   = "grinch.kdl"

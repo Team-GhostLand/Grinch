@@ -20,10 +20,10 @@ const (
 )
 
 func SwapServerGitToDev() error {
-	if _, err := os.Stat(filepath.FromSlash(util.GitSvOvrrDir)); errors.Is(err, fs.ErrNotExist) {
+	if _, err := os.Stat(filepath.FromSlash(util.ServerOvrrDir)); errors.Is(err, fs.ErrNotExist) {
 		return nil //Do nothing if there were no server-overrides in the 1st place
 	}
-	return os.Rename(filepath.FromSlash(util.GitSvOvrrDir), filepath.FromSlash(util.DevSvOvrrDir))
+	return os.Rename(filepath.FromSlash(util.ServerOvrrDir), filepath.FromSlash(util.DevServerOvrrDir))
 }
 
 func ResolveServerRemovals() error {
