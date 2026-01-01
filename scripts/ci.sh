@@ -6,14 +6,23 @@ echo "
 -----------STARTED ON: $(date)-----------";
 
 if [ -z "$REPO" ]; then
-    echo "ERROR: You must specify a \$REPO envar!";
-    exit 1
+	if [ -z "$REPO_FILE" ]; then
+    	echo "ERROR: You must specify a \$REPO envar!";
+    	exit 1
+	else
+		REPO="$(cat "$REPO_FILE")"
+	fi
 fi
 if [ -z "$PACK" ]; then
-    echo "ERROR: You must specify a \$PACK envar!";
-    exit 1
+	if [ -z "$PACK_FILE" ]; then	
+		echo "ERROR: You must specify a \$PACK envar!";
+		exit 1
+	else
+		PACK="$(cat "$PACK_FILE")"
+	fi
 fi
 echo "Using repo: $REPO";
+echo "Using pack: $PACK";
 
 if [ -e "cache" ]; then
     echo "...which is already cached - will do a simple git pull to check for updates instead of a full git clone.";
