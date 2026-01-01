@@ -9,11 +9,22 @@ modpacks {
         description "wa wa wa wa wa"
 		names {
 			default "A Modpack (version %V)"
-			quick "A Modpack - version %V (%Pquick-mode)"
+			quick "A Modpack - version %V (%P quick-mode)"
 			dev "DevExport of %V from %D"
 			slim "A Modpack - Slim Edition %V"
 			tweakable "A Modpack - Tweakable Edition %V"
 			git "IT3"
+		}
+    }
+    modpack "SomethingNewer" path="./modpack2" {
+        description "wa wa wa wa wa"
+		names {
+			default "A Modpack (version %V)"
+			quick "A Modpack - version %V (%P quick-mode)"
+			dev "DevExport of %V from %D"
+			slim "A Modpack - Slim Edition %V"
+			tweakable "A Modpack - Tweakable Edition %V"
+			git "IT3b"
 		}
     }
     /-modpack "Something" path="./modpack" preferred-name="Pack" {

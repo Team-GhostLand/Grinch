@@ -10,6 +10,7 @@
 		"EXPORTNAME",
 		"fname",
 		"fset",
+		"gitname",
 		"GOARCH",
 		"gopkg",
 		"Hndl",
@@ -17,6 +18,7 @@
 		"ingame",
 		"libc",
 		"malformatted",
+		"mcversion",
 		"Modpack",
 		"modpacks",
 		"modrinth",
@@ -25,6 +27,7 @@
 		"otiai",
 		"Ovrr",
 		"pflag",
+		"rawname",
 		"riscv",
 		"RMINDEX",
 		"russross",
@@ -34,5 +37,9 @@
 		"stackoverflow",
 		"tweakable",
 		"xprt"
-	]
+	],
+	"[json]": {
+		"editor.tabSize": 2,
+		"editor.insertSpaces": true
+	}
 }
