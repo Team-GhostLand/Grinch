@@ -37,7 +37,7 @@ if [ "$1" = "install" ]; then
     
     echo "Downloading Linux binaries...";
     mkdir -p "./bin/";
-    wget 'https://github.com/Team-GhostLand/Grinch/releases/download/mvp-6/linux.zip'
+    wget 'https://github.com/Team-GhostLand/Grinch/releases/download/v1.0/linux.zip'
     if [ $? -ne 0 ]; then
         echo "Download failed!"
         exit 1;
@@ -78,7 +78,7 @@ if [ "$1" = "install" ]; then
     ln --symbolic --verbose "$(pwd)/scripts/installer.sh" "$INSTALL_PATH-manager";
     ln --symbolic --verbose "$(pwd)/scripts/make_serverpack.sh" "$INSTALL_PATH-serverpack";
     
-    echo "Installed!!!  🎉"
+    echo "Installed!!! 🎉"
     exit 0;
 fi
 

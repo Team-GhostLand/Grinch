@@ -14,7 +14,7 @@ var rootCmd = &cobra.Command{
 	Short: "Grinch: Git x Modrinth",
 	Long: `~ Grinch: Git x Modrinth ~
 
-Version: MVP-6
+Version: v1.0
 Docs: On GitHub
 
 by Team GhostLand`,
@@ -38,7 +38,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.Grinch.yaml)")
+	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is ./grinch.kdl)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
