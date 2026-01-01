@@ -9,10 +9,6 @@ if [ -z "$REPO" ]; then
     echo "ERROR: You must specify a \$REPO envar!";
     exit 1
 fi
-if [ -z "$NAME" ]; then
-    echo "ERROR: You must specify a \$NAME envar!";
-    exit 1
-fi
 if [ -z "$PACK" ]; then
     echo "ERROR: You must specify a \$PACK envar!";
     exit 1
@@ -43,21 +39,14 @@ fi
 
 echo "Building modpack version $VER (because it's different than $(cat ../last-version.txt))";
 MRP=".mrpack"
-Q="quick$MRP"
-S="slim$MRP"
-T="tweakable$MRP"
-/app/grinch e -qT "$Q" "$PACK" || exit
+MAIN="$(/app/grinch query name "$PACK")$MRP"
+S="$(/app/grinch query name_slim "$PACK")$MRP"
+T="$(/app/grinch query name_tweakable "$PACK")$MRP"
+/app/grinch e -T "$MAIN" "$PACK" || exit
 /app/grinch e -sT "$S" "$PACK" || exit
 /app/grinch e -tT "$T" "$PACK" || exit
-/app/grinch-serverpack "$Q" || exit
 
-EXPORTNAME="$NAME $VER";
-echo "Exporting just-built assets as $EXPORTNAME";
-SERVERPACK="$EXPORTNAME - Server Edition$MRP"
-mv "$Q" "$EXPORTNAME$MRP" || exit
-mv "$S" "$EXPORTNAME - Slim Edition$MRP" || exit
-mv "$T" "$EXPORTNAME - Tweakable Edition$MRP" || exit
-mv "serverpack-$Q" "$SERVERPACK" || exit
+echo "Exporting just-built assets...";
 mv ./*.mrpack "/exports" || exit
 echo "$VER" > "../last-version.txt"
 
@@ -68,7 +57,7 @@ rm "$UPDATE_TARGET";
 if [ $? -ne 0 ]; then
     echo "WARN: Failed to delete the older $UPDATE_TARGET. Not treating it as an error, as it simply must've already not existed. (And if it does exist - the next command will either throw an error and properly exit or simply overwrite it.)";
 fi
-cp "$SERVERPACK" "$UPDATE_TARGET" || exit
+cp "$MAIN" "$UPDATE_TARGET" || exit
 
 echo "DONE! Waiting for 2min until the next cycle.";
 sleep 120
