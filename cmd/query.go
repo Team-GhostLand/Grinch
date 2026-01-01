@@ -39,12 +39,12 @@ If no modpack is specified (from among those in grinch.kdl), the default modpack
 		util.Hndl(err, "Couldn't load workspace config", false)
 
 		var mp *util.ModpackDefinition
-		if len(args) == 0 {
+		if len(args) == 1 {
 			mp, err = util.SelectModpack(pcf, wcf)
 			util.Hndl(err, "Couldn't select modpack", false)
 		} else {
-			mp, err = util.FindModpackByName(pcf, args[0])
-			util.Hndl(err, "Couldn't find modpack "+args[0], false)
+			mp, err = util.FindModpackByName(pcf, args[1])
+			util.Hndl(err, "Couldn't find modpack "+args[1], false)
 		}
 
 		path := filepath.FromSlash(mp.Path)

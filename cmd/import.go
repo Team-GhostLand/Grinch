@@ -58,25 +58,21 @@ var importCmd = &cobra.Command{
 		err = util.Unzip(mrpack_path, util.Tempdir)
 		util.Hndl(err, "Cannot unzip "+mrpack_path+" to "+util.Tempdir, true) //Although there is no need to cleanup if unzip fails COMPLETELY, it might also fail partially (and leave a half-full .temp folder behind) - hence the true here
 
-		//--TRANSFORMS; CONSTRAINTS--
+		//--TRANSFORMS--
 		file_transform_error := "Couldn't execute the JSON transforms necessary for import" //JSON STUFF:
 		mi, err := util.GetMrIndexJson(util.MrIndexFileLocation)
 		util.Hndl(err, file_transform_error, true)
 
 		util.DoPrefixSideSupportJsonTransforms(&mi, trans.ImportTransformPredicates, "GR_", false)
 		util.DoPrefixSideSupportJsonTransforms(&mi, trans.ImportTransformPredicates, "GRd_", true)
-		err = trans.SolveJsonImportConstraints(&mi, mp.Constr)
-		util.Hndl(err, file_transform_error, true)
+		trans.ApplyJsonParamsOnImport(&mi, mp.Params)
 		trans.SortMrIndexOnImport(&mi)
 
 		err = util.SetMrIndexJson(mi, util.MrIndexFileLocation)
 		util.Hndl(err, file_transform_error, true)
 
-		err = trans.SwapServerDevToGit() //FILE STUFF:
+		err = trans.SwapServerDevToGit()
 		util.Hndl(err, "Couldn't execute the file transforms necessary for import", true)
-
-		err = trans.SolveFileImportConstraints(mp.Constr.Filters)
-		util.Hndl(err, "Failure while solving file constraints", true)
 
 		//--BACKUP OLD PROJECT AND REPLACE IT WITH NEW ONE--
 		_, err = util.IsSafelyCreatable(util.Backup)

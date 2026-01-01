@@ -10,16 +10,6 @@ import (
 	"github.com/Team-GhostLand/Grinch/util"
 )
 
-type ExportMode int
-
-const (
-	EmDefault ExportMode = iota
-	EmQuick
-	EmDev
-	EmSlim
-	EmTweakable
-)
-
 func SwapServerGitToDev() error {
 	if _, err := os.Stat(filepath.FromSlash(util.ServerOvrrDir)); errors.Is(err, fs.ErrNotExist) {
 		return nil //Do nothing if there were no server-overrides in the 1st place
@@ -67,24 +57,23 @@ func ResolveServerRemovals() error {
 	return err
 }
 
-func DoExportJsonTransforms(em ExportMode) error {
-	if em == EmDefault || em == EmQuick {
-		return nil //They don't need any JSON transforms - early-return
-	}
+func DoExportJsonTransforms(mp *util.ModpackDefinition, em util.ExportMode) (util.MrIndex, error) {
 
 	mi, err := util.GetMrIndexJson(util.MrIndexFileLocation)
 	if err != nil {
-		return err
+		return mi, err
 	}
 
+	mi.Name = util.ResolveTemplateString(&mi, util.GetIngameExportName(mp, em))
+
 	switch em {
-	case EmDev:
+	case util.EmDev:
 		util.DoClientsideSupportJsonTransforms(&mi, util.MssUnsupported, util.MssRequired, true)
-	case EmSlim:
+	case util.EmSlim:
 		util.DoClientsideSupportJsonTransforms(&mi, util.MssOptional, util.MssUnsupported, false)
-	case EmTweakable:
+	case util.EmTweakable:
 		util.DoClientsideSupportJsonTransforms(&mi, util.MssOptional, util.MssOptional, true)
 	}
 
-	return util.SetMrIndexJson(mi, util.MrIndexFileLocation)
+	return mi, util.SetMrIndexJson(mi, util.MrIndexFileLocation)
 }

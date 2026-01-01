@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 type MrIndexModSideSupport string
@@ -100,3 +101,7 @@ func DoPrefixSideSupportJsonTransforms(mi *MrIndex, predicates map[string]MrInde
 }
 
 //TODO: Make disable bool's behavior consistent across all funcs above (right now, the upper 2 leave disabled status alone if disable==false, while the lower will make it enabled in such case). Instead, make an enum to hold all 3 possible options ("leave alone", "disable", "enable")
+
+func ResolveTemplateString(mi *MrIndex, template string) string {
+	return strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(template, "%D", time.Now().Format("2006-01-02 15.04.05")), "%V", mi.Ver), "%P", "%")
+}

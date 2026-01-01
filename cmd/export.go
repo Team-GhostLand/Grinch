@@ -32,18 +32,18 @@ var exportCmd = &cobra.Command{
 		util.Hndl(err, mode_flag_parse_error, false)
 
 		//There's probably a better way to do it, using Go's funky little string marker thingies (like when parsing KDL), but I don't know Go well enough to know how to use them
-		em := trans.EmDefault
+		em := util.EmDefault
 		if em_quick {
-			em = trans.EmQuick
+			em = util.EmQuick
 		}
 		if em_dev {
-			em = trans.EmDev
+			em = util.EmDev
 		}
 		if em_slim {
-			em = trans.EmSlim
+			em = util.EmSlim
 		}
 		if em_tweakable {
-			em = trans.EmTweakable
+			em = util.EmTweakable
 		}
 
 		to, err := cmd.Flags().GetString("to")
@@ -65,7 +65,7 @@ var exportCmd = &cobra.Command{
 			mp, err = util.SelectModpack(pcf, wcf)
 			util.Hndl(err, "Couldn't select modpack", false)
 		} else {
-			if em == trans.EmDev {
+			if em == util.EmDev {
 				util.Hndl(errors.New("please use .gr-workspace or grinch.kdl instead"), "You cannot combine the --dev flag with manually selecting which pack to export - this runs the risk of accidentally importing over a wrong modpack later down the line", false)
 			}
 			mp, err = util.FindModpackByName(pcf, args[0])
@@ -77,8 +77,6 @@ var exportCmd = &cobra.Command{
 			util.Hndl(errors.New("chosen modpack "+mp.Name+" has no path associated with it"), "Couldn't select modpack", false)
 		}
 
-		name := util.GetExportName(mp, to)
-
 		//--TEMPDIR--
 		_, err = util.IsSafelyCreatable(util.Tempdir)
 		util.Hndl(err, "Cannot safely create a .temp directory", false)
@@ -88,20 +86,21 @@ var exportCmd = &cobra.Command{
 		defer os.RemoveAll(util.Tempdir)
 
 		//--TRANSFORMS--
-		err = trans.DoExportJsonTransforms(em)
+		mi, err := trans.DoExportJsonTransforms(mp, em)
 		util.Hndl(err, "Couldn't execute the JSON transforms necessary for your export mode", true)
 
 		file_transform_error := "Couldn't execute the file transforms necessary for your export mode"
-		if em == trans.EmDefault {
+		if em == util.EmDefault {
 			err = trans.ResolveServerRemovals()
 			util.Hndl(err, file_transform_error, true)
 		}
-		if em == trans.EmDev {
+		if em == util.EmDev {
 			err = trans.SwapServerGitToDev()
 			util.Hndl(err, file_transform_error, true)
 		}
 
 		//--ZIP THAT BODY-BAG UP--
+		name := util.ResolveTemplateString(&mi, util.GetFileExportName(mp, em, to))
 		_, err = util.IsSafelyCreatable(name)
 		util.Hndl(err, "Cannot safely create "+name, true)
 		err = util.MakeZipFile(util.Tempdir, name)

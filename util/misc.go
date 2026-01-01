@@ -23,6 +23,16 @@ const (
 	ReasonableDirPerms      = 0755
 )
 
+type ExportMode int
+
+const (
+	EmDefault ExportMode = iota
+	EmQuick
+	EmDev
+	EmSlim
+	EmTweakable
+)
+
 func Hndl(err error, with string, cleanup bool) {
 	if err != nil {
 		if cleanup {

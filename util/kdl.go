@@ -18,23 +18,23 @@ type ProjectConfigFile struct {
 }
 
 type ModpackDefinition struct {
-	Name    string             `kdl:",arg"`
-	Path    string             `kdl:"path"`
-	NameOut string             `kdl:"preferred-name"`
-	Constr  PackDefConstraints `kdl:",children"`
+	Name   string        `kdl:",arg"`
+	Path   string        `kdl:"path"`
+	Params PackDefParams `kdl:",children"`
 }
 
-type PackDefConstraints struct {
-	Filters     PackDefConstrFilterSet `kdl:"files"`
-	Version     string                 `kdl:"version-prefix"`
-	Description string                 `kdl:"description"`
-	Name        string                 `kdl:"ingame-name"`
+type PackDefParams struct {
+	Names       NameSet `kdl:"names"`
+	Description string  `kdl:"description"`
 }
 
-type PackDefConstrFilterSet struct {
-	Allow      []string `kdl:"allow"`
-	Expect     []string `kdl:"expect"`
-	Disallowed []string `kdl:"disallowed"`
+type NameSet struct {
+	Default   string `kdl:"default"`
+	Quick     string `kdl:"quick"`
+	Dev       string `kdl:"dev"`
+	Slim      string `kdl:"slim"`
+	Tweakable string `kdl:"tweakable"`
+	Git       string `kdl:"git"`
 }
 
 func LoadProjectConfig(path string) (ProjectConfigFile, error) {
@@ -47,7 +47,7 @@ func LoadProjectConfig(path string) (ProjectConfigFile, error) {
 	if err != nil {
 		return pcf, err
 	}
-	if pcf.Version != 3 {
+	if pcf.Version != 4 {
 		return pcf, errors.New("this version of grinch uses config version 3, but yours is written in version " + fmt.Sprint(pcf.Version))
 	}
 	if len(pcf.MPs.MP) == 0 {
@@ -85,13 +85,28 @@ func FindModpackByName(pcf ProjectConfigFile, name string) (*ModpackDefinition, 
 	return nil, errors.New("modpack " + name + " isn't defined anywhere in grinch.kdl")
 }
 
-func GetExportName(mp *ModpackDefinition, nameOverride string) string {
+func GetFileExportName(mp *ModpackDefinition, mode ExportMode, nameOverride string) string {
 	ext := "mrpack"
 	if nameOverride != "" {
 		return EnsureExtension(nameOverride, ext)
-	} else if mp.NameOut != "" {
-		return EnsureExtension(mp.NameOut, ext)
 	} else {
-		return mp.Name + "." + ext
+		return EnsureExtension(GetIngameExportName(mp, mode), ext)
+	}
+}
+
+func GetIngameExportName(mp *ModpackDefinition, mode ExportMode) string {
+	switch mode {
+	case EmDefault:
+		return mp.Params.Names.Default
+	case EmQuick:
+		return mp.Params.Names.Quick
+	case EmDev:
+		return mp.Params.Names.Dev
+	case EmSlim:
+		return mp.Params.Names.Slim
+	case EmTweakable:
+		return mp.Params.Names.Tweakable
+	default:
+		return mp.Params.Names.Git
 	}
 }

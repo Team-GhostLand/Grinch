@@ -1,11 +1,22 @@
-format-version 3
+format-version 4
 
-default-modpack "Something"
+default-modpack "SomethingNew"
 
  //; == {} == <nothing>
 
 modpacks {
-    modpack "Something" path="./modpack" preferred-name="Pack" {
+    modpack "SomethingNew" path="./modpack" {
+        description "wa wa wa wa wa"
+		names {
+			default "A Modpack (version %V)"
+			quick "A Modpack - version %V (%Pquick-mode)"
+			dev "DevExport of %V from %D"
+			slim "A Modpack - Slim Edition %V"
+			tweakable "A Modpack - Tweakable Edition %V"
+			git "IT3"
+		}
+    }
+    /-modpack "Something" path="./modpack" preferred-name="Pack" {
         version-prefix "1."
         description "wi wi wi wi wi"
         ingame-name "IT2"
@@ -14,15 +25,15 @@ modpacks {
             //expect "abc" "xyz"
             //disallowed "abc" "xyz"
         }
-    };
-    modpack "Something else" path="./modpack2" {
+	}
+    /-modpack "Something else" path="./modpack2" {
         files {
             allow "abc" "xyz"
             expect "abc" "xyz"
             disallowed "abc" "xyz"
         }
     }
-    modpack "Something else-er" path="./modpack3" {
+    /-modpack "Something else-er" path="./modpack3" {
         //allow;
         //expect;
         //disallowed;
